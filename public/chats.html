@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<style>
+    *{
+        overflow-x: hidden;
+    }
+        /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+#displayChats::-webkit-scrollbar, .noScroll::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #0dcaf0; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #0dcaf0; 
+  opacity: 50%;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    opacity: 100%;
+}
+
+</style>
+
+<body class="position-relative">
+    <div id="waiting" class="d-none" style="z-index: 999999999999999;">
+        <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
+    </div>
+    <h1 id="welcomeNote" class="p-3 text-center"></h1>
+
+    <div class="row" style="height: 90vh;">
+        <div class="col-6 col-md-3 h-100" id="displayAdded">
+            <p class="p-3 bg-info rounded-3">You have no added friend</p>
+        </div>
+        <div class="col-6 col-md-5 h-100" class="noScroll">
+            <div class="h-75" class="noScroll">
+                <h3 class="text-center fw-bold" id="displaySenderName"></h3>
+                <div  id="displayChats" class="h-100" style="overflow-y: auto;">
+                    <h3 class="bg-info bg-opacity-100 p-3 rounded-5 d-block my-auto">Add friends And Click On Their Names To Chat With Them</h3>
+                </div>
+            </div>
+            <div id="displaySend" class="h-25 mb-5">
+                
+            </div>
+        </div>
+        <div class="col-12 col-md-3 h-100" id="displayUnadded">
+
+        </div> 
+    </div>
+    <script type="module">
+        let isFetchingData = true
+isFetchingData = true
+            if (isFetchingData) {
+                waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+            }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-OZKTz1q19oui_-6RQA1AlhNuJcNQC9Y",
+            authDomain: "personal-chat-app-ac897.firebaseapp.com",
+            databaseURL: "https://personal-chat-app-ac897-default-rtdb.firebaseio.com",
+            projectId: "personal-chat-app-ac897",
+            storageBucket: "personal-chat-app-ac897.appspot.com",
+            messagingSenderId: "1039837682767",
+            appId: "1:1039837682767:web:246783dfaec83b57f31e3a"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+        let currentIndex = null
+        let allChatUsers = []
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // alert(user.email)
+                // const uid = user.uid;
+                welcomeNote.innerText = `Chat Room, ${user.displayName}`
+                currentUserFetch()
+                // ...
+            } else {
+                alert("sign out")
+                // User is signed out
+                // ...
+            }
+        });
+
+
+        const currentUserFetch =()=>{
+            const starCountRef = ref(database, `allChatUsers`);
+            onValue(starCountRef, (snapshot) => {
+                console.log(snapshot)
+                allChatUsers = JSON.parse(snapshot.val());
+                allChatUsers.map((user)=>{
+                    if (user.userId==auth.currentUser.uid) {
+                        currentIndex = user.userIndex
+                        showUnadded()
+                    }
+                    
+                })
+            });
+        }
+
+        const showUnadded =()=>{
+            console.log(allChatUsers)
+            console.log(currentIndex)
+            displayUnadded.innerHTML = ""
+            if (allChatUsers[currentIndex].chats[1].length>0) {
+                for (let i = 0; i < allChatUsers.length; i++) {
+                allChatUsers[currentIndex].chats[1].map((id, index)=>{
+                    if (id==allChatUsers[i].userId) {
+                        displayUnadded.innerHTML += `
+                            <div>
+                                <img src="${allChatUsers[i].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
+                                <p class="bg-info my-2 d-inline" onclick="addIndex('${id}', ${i}, ${index})">${allChatUsers[i].name}</p>    
+                            </div>
+                        `
+                    }
+                })           
+            }          
+            } else{
+                    displayUnadded.innerHTML += `
+                    <p class="bg-info my-5 p-3 rounded-3")">You have no new friend to chat with</p>
+                    `
+                }
+        showAdded()
+        saveData()
+        }
+        
+        const showAdded=()=>{
+            displayAdded.innerHTML = ""
+            if (allChatUsers[currentIndex].chats[2].length>0) {
+                allChatUsers[currentIndex].chats[2].map((particular)=>{
+                displayAdded.innerHTML += `
+                    <div class="bg-info p-3 rounded-3">
+                        <img src="${allChatUsers[particular[0]].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
+                        <p class="p-2 rounded-3 d-inline" onclick="openChat(${particular[0]}, ${particular[1]})">${allChatUsers[particular[0]].name}</p>    
+                    </div>
+                `
+            })
+            } else{
+                    displayAdded.innerHTML += `
+                    <p class="bg-info my-2")">You have no friend to chat with yet, add friends to chat with them</p>
+                    `
+            }
+            isFetchingData = false
+            if (!isFetchingData) {
+                waiting.className = "d-none"
+            }
+        }
+        
+        const addIndex=(addingId, addingIndex, last)=>{
+            // allChatUsers[currentIndex].chats[0].push(addingId)
+            // allChatUsers[addingIndex].chats[0].push(allChatUsers[currentIndex].userId)
+            allChatUsers[currentIndex].chats[1].splice(last, 1)
+            allChatUsers[addingIndex].chats[1] = allChatUsers[addingIndex].chats[1].filter((id)=>id!=allChatUsers[currentIndex].userId)
+            allChatUsers[addingIndex].notifications.push(`${allChatUsers[currentIndex].name} added to his personal chat room, you can message each other in the chat room`)
+
+
+            let receiveIds = allChatUsers[addingIndex].chats[2].length
+            let userIds = allChatUsers[currentIndex].chats[2].length
+
+            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, []])
+            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, []])
+
+
+            showUnadded()
+        }
+
+        let me = null
+        let you = null
+        let all = null
+        
+        const openChat =(receiverIndex, receiverId)=>{
+            displaySenderName.innerText = `${allChatUsers[receiverIndex].name}`
+            allChatUsers[currentIndex].chats[2].map((particular, index)=>{
+                if (particular[0]==receiverIndex && particular[1]==receiverId) {
+                        me=receiverIndex
+                        you=receiverId
+                        all = index
+                        console.log(me, you, all)
+                    if (allChatUsers[currentIndex].chats[2][index][2].length>0) {
+                        displayChats.innerHTML = ""
+                        allChatUsers[currentIndex].chats[2][index][2].map((message)=>{
+                        displayChats.innerHTML +=   `
+                        <div id="messageDiv${index}" class="bg-info bg-opacity-50 my-2">
+                            <p class="my-1">${message.senderName}</p>
+                            <p class="my-1">Message: ${message.message}</p>
+                            <i class="my-1">Time: ${message.time} Date${message.date}</i>
+                        </div>
+                        <hr>
+                        `
+                    })
+                    let messageLastIndex = 0
+                    messageLastIndex = allChatUsers[currentIndex].chats[2][index][2].length
+                    displayChats.scrollTop = displayChats.scrollHeight;
+                } else{
+                        displayChats.innerHTML =   `
+                        <p>Message: No message yet</p>
+                        `
+                    }
+                    displaySend.innerHTML = `
+                        <div class="d-flex">
+                            <input class="form-control ms-2" type="text" id="msgInput">
+                            <button class="btn btn-info me-2" onclick="sendMessage(${me}, ${you}, ${all})">Send</button>
+                        </div>
+                    `
+                }
+            })
+        }
+        
+        const sendMessage =(receiverIndex, receiverId, messageIndex)=>{
+            let date = new Date()
+            let messageDetails = {
+                message: msgInput.value,
+                senderName: `${allChatUsers[currentIndex].name}`,
+                time: date.toTimeString(),
+                date: date.toDateString()
+            }
+            allChatUsers[currentIndex].chats[2][all][2].push(messageDetails)
+            allChatUsers[receiverIndex].chats[2][receiverId][2].push(messageDetails)
+            saveData()
+            openChat(me, you)
+            msgInput.focus()
+        }
+        const saveData = ()=>{
+            let allChatUsersString = JSON.stringify(allChatUsers)
+            let allChatUsersRef = ref(database, `allChatUsers`)
+            set(allChatUsersRef, allChatUsersString)
+        }
+
+        
+        window.showUnadded = showUnadded
+        window.showAdded = showAdded
+        window.addIndex  = addIndex
+        window.openChat = openChat
+        window.sendMessage = sendMessage
+
+        // window.onload = showUnadded()
+    </script>
+</body>
+
+</html>

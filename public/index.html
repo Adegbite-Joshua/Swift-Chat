@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="w-50 d-block mx-auto">
+    <button class="btn btn-success w-100 mx-auto d-block my-2" id="signInGoogle">Sign Up With Google</button>
+    <button class="btn btn-success w-100 mx-auto d-block my-2" id="signInYahoo">Sign Up With Yahoo</button>
+    <input type="text" placeholder="name" id="namee">
+    <input type="text" placeholder="mail" id="mail">
+    <input type="text" placeholder="password" id="pass">
+    <button onclick="signIn()">Sign</button>
+  </div>
+
+  <script type="module">
+    // Import the functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-OZKTz1q19oui_-6RQA1AlhNuJcNQC9Y",
+      authDomain: "personal-chat-app-ac897.firebaseapp.com",
+      databaseURL: "https://personal-chat-app-ac897-default-rtdb.firebaseio.com",
+      projectId: "personal-chat-app-ac897",
+      storageBucket: "personal-chat-app-ac897.appspot.com",
+      messagingSenderId: "1039837682767",
+      appId: "1:1039837682767:web:246783dfaec83b57f31e3a"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const googleProvider = new GoogleAuthProvider();
+    const yahooProvider = new OAuthProvider('yahoo.com');
+    const auth = getAuth();
+    const database = getDatabase();
+    let lastUserIndex = 0
+    let allChatUsers = []
+
+    const chatRef = ref(database, `allChatUsers`);
+    onValue(chatRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        allChatUsers = JSON.parse(data)
+        lastUserIndex = allChatUsers.length
+        console.log(allChatUsers)
+      }
+    });
+
+    document.getElementById("signInGoogle").addEventListener("click", () => {
+      signInWithPopup(auth, googleProvider)
+        .then((result) => {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          const userInfo = result.user;
+          let foundUser = false
+          allChatUsers.map((user) => {
+            if (userInfo.uid == user.userId) {
+              alert("found user")
+              foundUser = true
+            }
+          })
+          if (foundUser) {
+            alert("Welcome back!!!")
+            window.location.href = "dashboard.html"
+          } else{
+              let added = []
+              let unadded = []
+              let chat = []
+              allChatUsers.map((user) => {
+                unadded.push(user.userId)
+              })
+              let user = {
+                name: userInfo.displayName,
+                photo: userInfo.photoURL,
+                email: userInfo.email,
+                userId: userInfo.uid,
+                chats: [added, unadded, chat],
+                userIndex: lastUserIndex,
+                posts: [],
+                followers: [],
+                following: [],
+                notifications: []
+              }
+              allChatUsers.map((users, index) => {
+                users.chats[1].push(userInfo.uid)
+              })
+              allChatUsers.push(user)
+              let allChatUsersString = JSON.stringify(allChatUsers)
+              console.log(allChatUsersString)
+              let allChatUsersRef = ref(database, `allChatUsers`)
+              set(allChatUsersRef, allChatUsersString)
+              alert("you have successfully created an account")
+              window.location.href = "dashboard.html"
+          }
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const emailError = error.customData.email;
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          console.log(error)
+        });
+    })
+
+
+
+    const saveData = () => {
+      let allChatUsersString = JSON.stringify(allChatUsers)
+      let allChatUsersRef = ref(database, `allChatUsers`)
+      set(allChatUsersRef, allChatUsersString)
+    }
+
+    // const signIn =()=>{
+    //   let id =  Math.round(Math.random()*10000)
+    //       let added = []
+    //       let unadded = []
+    //       let chat = []
+    //     let user = {
+    //       name: namee.value,
+    //       email: mail.value,
+    //       userId: id,
+    //       chats: [added, unadded, chat]
+    //     }
+    //       allChatUsers.push(user)
+    //       console.log(allChatUsers)
+    //       let allChatUsersString = JSON.stringify(allChatUsers)
+    //       console.log(allChatUsersString)
+    //     let allChatUsersRef = ref(database, `allChatUsers`)
+    //     set(allChatUsersRef, allChatUsersString)
+    //     // window.location.href = "dashboard.html"
+    //     alert("You have successfully created an account")
+    // }
+
+    window.signIn = signIn
+  </script>
+</body>
+
+</html>

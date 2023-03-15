@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <!-- <link rel="stylesheet" href="../../bootstrap-5.2.2-dist/css/bootstrap.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'poppins', sans-serif;
+    }
+
+    .containerp {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btnp {
+        padding: 10px 60px;
+        background: #fff;
+        border: 0;
+        outline: none;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: 500;
+        border-radius: 30px;
+    }
+
+    .popup {
+        width: 400px;
+        background: #fff;
+        border-radius: 6px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.1);
+        text-align: center;
+        padding: 0 30px 30px;
+        color: #333;
+        visibility: hidden;
+        transition: transform 0.4s, top 0.4s;
+    }
+
+    .open-popup {
+        visibility: visible;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup h2 {
+        font-size: 38px;
+        font-weight: 500;
+        margin: 30px 0 10px;
+    }
+
+    .popup #button1 {
+        width: 100%;
+        margin-top: 50px;
+        padding: 10px 0;
+        background: #198754;
+        color: #fff;
+        border: 0;
+        outline: none;
+        font-size: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width:700px) {
+        .popup {
+            width: 300px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .smallDeviceWidth {
+            width: 100% !important;
+        }
+    }
+
+    .hand {
+        cursor: pointer;
+    }
+
+    .smallFont {
+        font-size: 10px;
+    }
+        /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #0dcaf0; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #0dcaf0; 
+  opacity: 50%;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    opacity: 100%;
+}
+</style>
+
+<body style="height: 100vh !important;" class="position-relative">
+
+    <div id="waiting" class="d-none" style="z-index: 999999999999999;">
+        <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
+    </div>
+    <div class="w-100 row">
+        <div class="col-12 col-md-8 h-25 p-5" id="total">
+            <img class="d-inline mx-3" src="" id="ownerPicture"
+                style="height: 100px; width: 100px; border-radius: 100%;" alt="">
+            <h1 class="d-inline mx-3" id="ownerName"></h1>
+        </div>
+        <div class="col-12 col-md-4 h-25 row">
+            <div class="col-6" onclick="openDisplayFollowers()">Followers(<span
+                    id="followersNumber">0</span>)</div>
+            <div class="col-6" onclick="openDisplayFollowing()">Following(<span
+                    id="followingNumber">0</span>)</div>
+            <button class="btn btn-info col-12 mx-auto" onclick="gotoChatRoom()">Message</button>
+        </div>
+    </div>
+
+    <div class="w-100 row">
+        <div class="w-100 d-block mx-auto">
+            <div id="displayPosts" class="w-100 mx-auto row p-4">
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="containerp">
+        <div class="popup" id="popup">
+            <button type="button" class="btn-close ms-auto d-block my-2" onclick="closeDisplayFollow()"
+                aria-label="Close"></button>
+            <div id="displayFollow"></div>
+            <button type="button" id="button1" onclick="closeDisplayFollow()">Post</button>
+        </div>
+    </div>
+
+    <script type="module">
+                let isFetchingData = true
+        isFetchingData = true
+            if (isFetchingData) {
+                waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+            }
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-storage.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-OZKTz1q19oui_-6RQA1AlhNuJcNQC9Y",
+            authDomain: "personal-chat-app-ac897.firebaseapp.com",
+            databaseURL: "https://personal-chat-app-ac897-default-rtdb.firebaseio.com",
+            projectId: "personal-chat-app-ac897",
+            storageBucket: "personal-chat-app-ac897.appspot.com",
+            messagingSenderId: "1039837682767",
+            appId: "1:1039837682767:web:246783dfaec83b57f31e3a"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+        const storage = getStorage();
+        let currentIndex = null
+        let allChatUsers = []
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // alert(user.email)
+                // const uid = user.uid;
+                document.querySelector("title").innerText = `Welcome, ${user.displayName}`
+                ownerPicture.src = `${user.photoURL}`
+                ownerName.innerText = `${user.displayName}`
+                currentUserFetch()
+                // ...
+            } else {
+                alert("sign out")
+                // User is signed out
+                // ...
+            }
+        });
+
+        const currentUserFetch = () => {
+            const starCountRef = ref(database, `allChatUsers`);
+            onValue(starCountRef, (snapshot) => {
+                console.log(snapshot)
+                allChatUsers = JSON.parse(snapshot.val());
+                allChatUsers.map((user) => {
+                    if (user.userId == auth.currentUser.uid) {
+                        currentIndex = user.userIndex
+                        displayUserDetails()
+                        // displayUserPosts()
+                        // showUnadded()
+                    }
+
+                })
+            });
+        }
+        let viewingIndex = Number(localStorage.getItem("viewingIndex"))
+        const displayUserDetails = () => {
+            document.querySelector("title").innerText = `${allChatUsers[viewingIndex].name}`
+            ownerPicture.src = `${allChatUsers[viewingIndex].photo}`
+            ownerName.innerHTML = `${allChatUsers[viewingIndex].name}`
+            console.log(allChatUsers[viewingIndex].followers)
+            followersNumber.innerText = allChatUsers[viewingIndex].followers.length
+            followingNumber.innerText = allChatUsers[viewingIndex].following.length
+            displayUserPosts()
+        }
+
+        const openDisplayFollowers = (followType) => {
+            popup.classList.add("open-popup")
+            displayFollow.innerHTML = ""
+            allChatUsers[viewingIndex].followers.map((follow) => {
+                displayFollow.innerHTML = `
+                 <p>${allChatUsers[follow].name}</p>
+                `
+            })
+        }
+        const openDisplayFollowing = (followType) => {
+            popup.classList.add("open-popup")
+            displayFollow.innerHTML = ""
+            allChatUsers[viewingIndex].following.map((follow) => {
+                displayFollow.innerHTML = `
+                 <p>${allChatUsers[follow].name}</p>
+                `
+            })
+        }
+
+        const closeDisplayFollow = (followType) => {
+            popup.classList.remove("open-popup")
+        }
+
+
+        const gotoFindPeople = () => {
+            window.location.href = "findPeople.html"
+        }
+
+        const displayUserPosts = () => {
+            // document.querySelector("title").innerText = `${allChatUsers[currentIndex].firstName} ${allChatUsers[currentIndex].lastName}`
+            if (allChatUsers[viewingIndex].posts.length > 0) {
+                allChatUsers[viewingIndex].posts.map((movie, index) => {
+                    movie.mediaName.map((name) => {
+                        getDownloadURL(storageRef(storage, `${name}`))
+                            .then((url) => {
+                                displayPosts.innerHTML += `
+                                    <div class="col-6 col-md-3" onclick="openDisplayPostDetails('${url}', ${index})">
+                                            <video onmouseover="playVideo(event)" onmouseleave="pauseVideo(event)" src="${url}" controls class="w-100"  style="height: 200px !important;" />
+                                    </div>
+                                        `
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                                // Handle any errors
+                            });
+                    })
+
+                })
+            } else {
+                displayPosts.innerHTML = `
+                <h1 class="bg-info p-5 rounded-5 mt-5">There is post under this account</h1>
+                `
+            }
+            isFetchingData = false
+            if (!isFetchingData) {
+                waiting.className = "d-none"
+            }
+           
+
+
+
+        }
+
+        const playVideo =(e)=>{
+            e.target.play()
+       }
+       const pauseVideo =(e)=>{
+            e.target.pause()
+       }
+        const openDisplayPostDetails = (url, index) => {
+            popup3.classList.add("open-popup")
+            displayPostDetails.innerHTML = `
+                <p>Posted on: ${allChatUsers[viewingIndex].posts[index].postDate}</p>
+                <video src="${url}" autoplay style="height: 400px; width: 280px"></video><br>
+                <h4>Describtion: ${allChatUsers[viewingIndex].posts[index].postMediaDescription}</h4>
+                <p><span onclick="likePost(${index})"><span id="likeNumber" class="ms-5">(0)</span>Likes </span> <span class="ms-5">(0)</span>Comments</p>
+            `
+            displayFollowNumber()
+        }
+
+        const displayFollowNumber =()=>{
+            likeNumber.innerText = allChatUsers[viewingIndex].posts[index].length
+        }
+
+        const closeDisplayPostDetails = () => {
+            popup3.classList.remove("open-popup")
+        }
+
+        const likePost = (index) => {
+            allChatUsers[viewingIndex].posts[index].push(viewingIndex)
+            displayFollowNumber()
+        }
+        const gotoChatRoom = () => {
+            window.location.href = "chats.html"
+        }
+
+        window.closeDisplayFollow = closeDisplayFollow
+        window.openDisplayFollowers = openDisplayFollowers
+        window.openDisplayFollowing = openDisplayFollowing
+        window.displayUserDetails = displayUserDetails
+        window.displayUserPosts = displayUserPosts
+        window.gotoChatRoom = gotoChatRoom
+        window.openDisplayPostDetails = openDisplayPostDetails
+        window.closeDisplayPostDetails = closeDisplayPostDetails
+        window.likePost = likePost
+        window.playVideo = playVideo
+        window.pauseVideo = pauseVideo
+        // window.onload = displayUserDetails()
+    </script>
+</body>
+
+</html>

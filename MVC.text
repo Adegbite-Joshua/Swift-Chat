@@ -1,0 +1,25 @@
+LOGIC - 
+    signUp/SignIn()
+    addUser()
+    sendMessage()
+
+allChatUsers = array [user]
+user = object {
+    name,
+    email,
+    photo,
+    uid,
+    chats
+}
+chats = [
+    added,
+    unadded,
+    chat
+]
+added = array [
+    [{senderId, receiverId, index}]
+]
+unadded = array [
+    {allChatUsers<name>}
+]
+chat[receiverIndex, []]

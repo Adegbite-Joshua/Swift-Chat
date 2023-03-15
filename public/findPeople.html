@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find People</title>
+    <!-- <link rel="stylesheet" href="../../bootstrap-5.2.2-dist/css/bootstrap.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<style>
+        /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #0dcaf0; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #0dcaf0; 
+  opacity: 50%;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    opacity: 100%;
+}
+</style>
+<body class="position-relative" style="min-height: 100vh;">
+    <div id="waiting" class="d-none" style="z-index: 999999999999999;">
+        <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
+    </div>
+    <div id="userProfile"></div>
+    <h2 align="center">Find People</h2>
+    <div id="display"></div>
+
+    <script type="module">
+        let isFetchingData = true
+isFetchingData = true
+            if (isFetchingData) {
+                waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+            }
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-OZKTz1q19oui_-6RQA1AlhNuJcNQC9Y",
+            authDomain: "personal-chat-app-ac897.firebaseapp.com",
+            databaseURL: "https://personal-chat-app-ac897-default-rtdb.firebaseio.com",
+            projectId: "personal-chat-app-ac897",
+            storageBucket: "personal-chat-app-ac897.appspot.com",
+            messagingSenderId: "1039837682767",
+            appId: "1:1039837682767:web:246783dfaec83b57f31e3a"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
+        let currentIndex = null
+        let allChatUsers = []
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // alert(user.email)
+                // const uid = user.uid;
+                document.querySelector("title").innerText = `Find People, ${user.displayName}`
+                currentUserFetch()
+                userProfile.innerHTML = `
+                <img class="d-inline rounded-circle" style="heigth: 70px; width: 70px;" src="${user.photoURL}"/>
+                <h1  class="d-inline">${user.displayName}</h1>
+                `
+                // ...
+            } else {
+                alert("sign out")
+                // User is signed out
+                // ...
+            }
+        });
+        
+        const currentUserFetch =()=>{
+            const starCountRef = ref(database, `allChatUsers`);
+            onValue(starCountRef, (snapshot) => {
+                console.log(snapshot)
+                allChatUsers = JSON.parse(snapshot.val());
+                allChatUsers.map((user)=>{
+                    if (user.userId==auth.currentUser.uid) {
+                        currentIndex = user.userIndex
+                        displayAllUsers()
+                    }
+                    
+                })
+            });
+        }
+
+        const displayAllUsers = ()=>{
+            display.innerHTML = ""
+            allChatUsers.map((user, index)=>{
+                console.log(user)
+                if (index != currentIndex) {
+                    display.innerHTML += `
+                    <p class="p-2" id="coverHover">
+                        <img src="${user.photo}"  style="heigth: 40px; width: 40px;" class="rounded-circle"/>
+                        <span onclick="viewSomeone(${index})">${user.name}</span>
+                        <button class="btn btn-info float-end m-2" onclick="gotoChatRoom">Message</button>
+                        <button class="btn btn-info float-end m-2" id="followBtn${index}" onclick="followSomeone(${index})">Follow</button>
+                        <button style="display: none;" class="btn btn-info float-end m-2" id="unfollowBtn${index}" onclick="unfollowSomeone(${index})">Unfollow</button>
+                    </p>
+                    `
+                    allChatUsers[currentIndex].following.map((follow)=>{
+                        console.log(follow)
+                        if (index==follow[0]) {
+                            console.log("here")
+                            document.getElementById(("followBtn"+index)).classList.add("d-none")
+                            document.getElementById(("unfollowBtn"+index)).style.display = "inline"                            
+                        }
+                    })
+                }
+            })
+            isFetchingData = false
+            if (!isFetchingData) {
+                waiting.className = "d-none"
+            }
+        }
+
+        const unfollowSomeone =(index)=>{
+            allChatUsers[currentIndex].following = allChatUsers[currentIndex].following.filter((followIndex)=>followIndex!=index)
+            allChatUsers[index].followers = allChatUsers[index].followers.filter((followIndex)=>followIndex!=index)
+            allChatUsers[index].notifications.push(`${allChatUsers[currentIndex].name} has unfollowed you.` )
+            saveData()
+        }
+
+        const gotoChatRoom=()=>{
+            window.location.href = "chats.html"
+        }
+
+        const viewSomeone =(viewingIndex)=>{
+            localStorage.setItem("viewingIndex", viewingIndex)
+            window.location.href = "viewSomeone.html"
+        }
+
+        const followSomeone =(index)=>{
+            allChatUsers[currentIndex].following.push([index])
+            allChatUsers[index].followers.push([currentIndex])
+            allChatUsers[index].notifications.push(`${allChatUsers[currentIndex].name} started following you, you can follow back` )
+            saveData()
+        }
+
+        const saveData = ()=>{
+            let allChatUsersString = JSON.stringify(allChatUsers)
+            let allChatUsersRef = ref(database, `allChatUsers`)
+            set(allChatUsersRef, allChatUsersString)
+        }
+        
+        window.followSomeone = followSomeone
+        window.viewSomeone = viewSomeone
+        window.gotoChatRoom = gotoChatRoom
+        window.unfollowSomeone = unfollowSomeone
+        // window.addIndex = addIndex
+    </script>
+</body>
+</html>
