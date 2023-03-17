@@ -14,15 +14,16 @@
     }
         /* width */
 ::-webkit-scrollbar {
-  width: 5px;
-}
-
-#displayChats::-webkit-scrollbar, .noScroll::-webkit-scrollbar {
   width: 0;
 }
 
+:hover::-webkit-scrollbar {
+  width: 7px;
+  background: #0dcaf0;
+}
+
 /* Track */
-::-webkit-scrollbar-track {
+:hover:-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px #0dcaf0; 
   border-radius: 10px;
 }
@@ -30,12 +31,18 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #0dcaf0; 
+  opacity: 0;
+  border-radius: 10px;
+}
+:hover::-webkit-scrollbar-thumb {
+  background: #0dcaf0; 
   opacity: 50%;
   border-radius: 10px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+:hover::-webkit-scrollbar-thumb:hover {
+    background: #0dcaf0;
     opacity: 100%;
 }
 
@@ -53,7 +60,7 @@
         </div>
         <div class="col-6 col-md-5 h-100" class="noScroll">
             <div class="h-75" class="noScroll">
-                <h3 class="text-center fw-bold" id="displaySenderName"></h3>
+                <h3 class="text-center fw-bold overflow-hidden" id="displaySenderName" ></h3>
                 <div  id="displayChats" class="h-100" style="overflow-y: auto;">
                     <h3 class="bg-info bg-opacity-100 p-3 rounded-5 d-block my-auto">Add friends And Click On Their Names To Chat With Them</h3>
                 </div>
@@ -154,13 +161,18 @@ isFetchingData = true
         const showAdded=()=>{
             displayAdded.innerHTML = ""
             if (allChatUsers[currentIndex].chats[2].length>0) {
-                allChatUsers[currentIndex].chats[2].map((particular)=>{
+                allChatUsers[currentIndex].chats[2].map((particular, index)=>{
                 displayAdded.innerHTML += `
-                    <div class="bg-info p-3 rounded-3">
+                    <div class="bg-info p-3 mt-3 rounded-3 position-relative overflow-visible">
+                        <span id="displayUnread${particular[0]}" class="bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill" style="z-index: 999999;"></span>
                         <img src="${allChatUsers[particular[0]].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
                         <p class="p-2 rounded-3 d-inline" onclick="openChat(${particular[0]}, ${particular[1]})">${allChatUsers[particular[0]].name}</p>    
                     </div>
                 `
+                    if (allChatUsers[currentIndex].chats[2][particular[1]][3]>=1) {
+                    document.getElementById("displayUnread"+particular[0]).innerText = `${allChatUsers[currentIndex].chats[2][particular[1]][3]}`
+                } 
+                console.log(allChatUsers[particular[0]].chats[2][particular[1]][3])
             })
             } else{
                     displayAdded.innerHTML += `
@@ -178,14 +190,14 @@ isFetchingData = true
             // allChatUsers[addingIndex].chats[0].push(allChatUsers[currentIndex].userId)
             allChatUsers[currentIndex].chats[1].splice(last, 1)
             allChatUsers[addingIndex].chats[1] = allChatUsers[addingIndex].chats[1].filter((id)=>id!=allChatUsers[currentIndex].userId)
-            allChatUsers[addingIndex].notifications.push(`${allChatUsers[currentIndex].name} added to his personal chat room, you can message each other in the chat room`)
+            allChatUsers[addingIndex].notifications.push(`${allChatUsers[currentIndex].name} added you to his personal chat room, you can now have direct message with each other in the chat room`)
 
 
             let receiveIds = allChatUsers[addingIndex].chats[2].length
             let userIds = allChatUsers[currentIndex].chats[2].length
 
-            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, []])
-            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, []])
+            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, [], 0])
+            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, [], 0])
 
 
             showUnadded()
@@ -199,21 +211,30 @@ isFetchingData = true
             displaySenderName.innerText = `${allChatUsers[receiverIndex].name}`
             allChatUsers[currentIndex].chats[2].map((particular, index)=>{
                 if (particular[0]==receiverIndex && particular[1]==receiverId) {
-                        me=receiverIndex
-                        you=receiverId
-                        all = index
-                        console.log(me, you, all)
+                    me=receiverIndex
+                    you=receiverId
+                    all = index
+                    console.log(me, you, all)
                     if (allChatUsers[currentIndex].chats[2][index][2].length>0) {
+                        allChatUsers[currentIndex].chats[2][index][3] = 0
+                        saveData()
                         displayChats.innerHTML = ""
-                        allChatUsers[currentIndex].chats[2][index][2].map((message)=>{
+                        allChatUsers[currentIndex].chats[2][index][2].map((message, messageIndex)=>{
                         displayChats.innerHTML +=   `
                         <div id="messageDiv${index}" class="bg-info bg-opacity-50 my-2">
                             <p class="my-1">${message.senderName}</p>
                             <p class="my-1">Message: ${message.message}</p>
                             <i class="my-1">Time: ${message.time} Date${message.date}</i>
+                            <i id="messageStatus${messageIndex}"></i>
                         </div>
                         <hr>
                         `
+                        console.log(allChatUsers[particular[0]].chats[2][index][3])
+                        if (allChatUsers[particular[0]].chats[2][index][3]>=1 && message.senderName==allChatUsers[currentIndex].name) {
+                            document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Unread`
+                        } else if (allChatUsers[particular[0]].chats[2][index][3]==0 && message.senderName==allChatUsers[currentIndex].name) {
+                            document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Seen`
+                        }
                     })
                     let messageLastIndex = 0
                     messageLastIndex = allChatUsers[currentIndex].chats[2][index][2].length
@@ -243,6 +264,7 @@ isFetchingData = true
             }
             allChatUsers[currentIndex].chats[2][all][2].push(messageDetails)
             allChatUsers[receiverIndex].chats[2][receiverId][2].push(messageDetails)
+            allChatUsers[receiverIndex].chats[2][all][3] = Number(allChatUsers[receiverIndex].chats[2][all][3])+1
             saveData()
             openChat(me, you)
             msgInput.focus()

@@ -276,13 +276,15 @@
             if (allChatUsers[currentIndex].followers.length>0) {
                 allChatUsers[currentIndex].followers.map((follow)=>{
                 console.log(follow)
+                console.log(allChatUsers[follow])
+                console.log(allChatUsers[follow].name)
                     displayFollow.innerHTML += `
-                 <p>${allChatUsers[follow[0]].name}</p>
+                 <p class="p-2 bg-info rounded-3">${allChatUsers[follow].name}</p>
                 `
             })
             } else{
                 displayFollow.innerHTML = `
-                <p>You have no follower yet</p>
+                <p class="p-2 bg-info rounded-3">You have no follower yet</p>
                 `
             }
         }
@@ -293,12 +295,12 @@
                 allChatUsers[currentIndex].following.map((follow)=>{
                 console.log(follow)
                     displayFollow.innerHTML += `
-                 <p>${allChatUsers[follow[0]].name}</p>
+                 <p class="p-2 bg-info rounded-3">${allChatUsers[follow].name}</p>
                 `
             })
             } else{
                 displayFollow.innerHTML = `
-                <p>You are yet to start following friends</p>
+                <p class="p-2 bg-info rounded-3">You are yet to start following friends</p>
                 `
             }
         }

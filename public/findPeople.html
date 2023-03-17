@@ -107,19 +107,29 @@ isFetchingData = true
                 console.log(user)
                 if (index != currentIndex) {
                     display.innerHTML += `
-                    <p class="p-2" id="coverHover">
+                    <div class="p-2" id="coverHover">
                         <img src="${user.photo}"  style="heigth: 40px; width: 40px;" class="rounded-circle"/>
                         <span onclick="viewSomeone(${index})">${user.name}</span>
-                        <button class="btn btn-info float-end m-2" onclick="gotoChatRoom">Message</button>
+                        <button class="btn btn-info float-end m-2  position-relative" onclick="gotoChatRoom()"> <span id="unread${index}" class="bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"></span>Message</button>
                         <button class="btn btn-info float-end m-2" id="followBtn${index}" onclick="followSomeone(${index})">Follow</button>
                         <button style="display: none;" class="btn btn-info float-end m-2" id="unfollowBtn${index}" onclick="unfollowSomeone(${index})">Unfollow</button>
-                    </p>
+                    </div>
                     `
+                    
+                    allChatUsers[currentIndex].chats[2].map((particular, indexs)=>{
+                        if (particular[0]==index) {
+                            if (allChatUsers[currentIndex].chats[2][particular[1]][3]>=1) {
+                                alert(allChatUsers[currentIndex].chats[2][particular[1]][3])
+                                document.getElementById("unread"+index).innerText = `${allChatUsers[currentIndex].chats[2][particular[1]][3]}`
+                            }
+            
+                        }
+                    })
                     allChatUsers[currentIndex].following.map((follow)=>{
                         console.log(follow)
-                        if (index==follow[0]) {
+                        if (index==follow) {
                             console.log("here")
-                            document.getElementById(("followBtn"+index)).classList.add("d-none")
+                            document.getElementById(("followBtn"+index)).style.display = "none"
                             document.getElementById(("unfollowBtn"+index)).style.display = "inline"                            
                         }
                     })
@@ -133,7 +143,7 @@ isFetchingData = true
 
         const unfollowSomeone =(index)=>{
             allChatUsers[currentIndex].following = allChatUsers[currentIndex].following.filter((followIndex)=>followIndex!=index)
-            allChatUsers[index].followers = allChatUsers[index].followers.filter((followIndex)=>followIndex!=index)
+            allChatUsers[index].followers = allChatUsers[index].followers.filter((followIndex)=>followIndex!=currentIndex)
             allChatUsers[index].notifications.push(`${allChatUsers[currentIndex].name} has unfollowed you.` )
             saveData()
         }
@@ -148,8 +158,8 @@ isFetchingData = true
         }
 
         const followSomeone =(index)=>{
-            allChatUsers[currentIndex].following.push([index])
-            allChatUsers[index].followers.push([currentIndex])
+            allChatUsers[currentIndex].following.push(index)
+            allChatUsers[index].followers.push(currentIndex)
             allChatUsers[index].notifications.push(`${allChatUsers[currentIndex].name} started following you, you can follow back` )
             saveData()
         }
