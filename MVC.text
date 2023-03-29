@@ -6,10 +6,15 @@ LOGIC -
 allChatUsers = array [user]
 user = object {
     name,
+    bio,
     email,
     photo,
     uid,
-    chats
+    chats,
+    posts,
+    follwers,
+    following,
+    notifications
 }
 chats = [
     added,
@@ -23,3 +28,34 @@ unadded = array [
     {allChatUsers<name>}
 ]
 chat[receiverIndex, []]
+posts = array [
+    [postDetails]
+]
+postDetails = object {
+    postMedia,
+    postDescribtion,
+    postDate,
+    postTime,
+    likes,
+    comments
+}
+follwers = [
+    [
+        follwersIndex
+    ]
+]
+
+game = [
+    {player1,
+    player2},
+    score,
+    {a1,
+    b1,
+    c1,
+    a2,
+    b2,
+    c2,
+    a3,
+    b3,
+    c3}
+]

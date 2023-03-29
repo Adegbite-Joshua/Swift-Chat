@@ -48,7 +48,7 @@
 
 </style>
 
-<body class="position-relative">
+<body class="position-relative" onunload="setToOffline()">
     <div id="waiting" class="d-none" style="z-index: 999999999999999;">
         <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
     </div>
@@ -75,7 +75,7 @@
     </div>
     <script type="module">
         let isFetchingData = true
-isFetchingData = true
+        isFetchingData = true
             if (isFetchingData) {
                 waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
             }
@@ -101,6 +101,11 @@ isFetchingData = true
         const database = getDatabase();
         let currentIndex = null
         let allChatUsers = []
+        let me = null
+        let you = null
+        let all = null
+        let allChatUsersGame = []
+
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -127,7 +132,6 @@ isFetchingData = true
                         currentIndex = user.userIndex
                         showUnadded()
                     }
-                    
                 })
             });
         }
@@ -158,6 +162,8 @@ isFetchingData = true
         saveData()
         }
         
+
+
         const showAdded=()=>{
             displayAdded.innerHTML = ""
             if (allChatUsers[currentIndex].chats[2].length>0) {
@@ -167,12 +173,17 @@ isFetchingData = true
                         <span id="displayUnread${particular[0]}" class="bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill" style="z-index: 999999;"></span>
                         <img src="${allChatUsers[particular[0]].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
                         <p class="p-2 rounded-3 d-inline" onclick="openChat(${particular[0]}, ${particular[1]})">${allChatUsers[particular[0]].name}</p>    
+                        <span id="activeStatus${particular[0]}" class="bg-dark position-absolute top-100 start-100 badge translate-middle rounded-pill" style="z-index: 999999;"></span>
                     </div>
                 `
-                    if (allChatUsers[currentIndex].chats[2][particular[1]][3]>=1) {
-                    document.getElementById("displayUnread"+particular[0]).innerText = `${allChatUsers[currentIndex].chats[2][particular[1]][3]}`
-                } 
-                console.log(allChatUsers[particular[0]].chats[2][particular[1]][3])
+                    if (allChatUsers[currentIndex].chats[2][index][3]>=1) {
+                        document.getElementById("displayUnread"+particular[0]).innerText = `${allChatUsers[currentIndex].chats[2][index][3]}`
+                    } 
+                    console.log(allChatUsers[particular[0]].chats[2][index][3])
+                    console.log(allChatUsers[currentIndex].chats[2][index][3])
+                    // console.log(allChatUsers[particular[0]].chats[2][particular[1]][3])
+                    // console.log(allChatUsers[currentIndex].chats[2][particular[1]][3])
+                    onlineStatus(particular[0])
             })
             } else{
                     displayAdded.innerHTML += `
@@ -183,6 +194,29 @@ isFetchingData = true
             if (!isFetchingData) {
                 waiting.className = "d-none"
             }
+        }
+        
+        const onlineStatus =(userIndex)=>{
+            // For the chatting partner
+            if (allChatUsers[userIndex].activeStatus == true) {
+                document.getElementById("activeStatus"+userIndex).innerText = "Active"
+            } else{
+                document.getElementById("activeStatus"+userIndex).innerText = "Offline"
+            }
+
+            // For the current user
+            if (window.navigator.onLine) {
+                allChatUsers[currentIndex].activeStatus = true
+            } else{
+                allChatUsers[currentIndex].activeStatus = false
+            }
+            // if (allChatUsers[userIndex].activeStatus == true) {
+            //     document.getElementById("activeStatus"+userIndex).innerText = "Active"
+            // } else{
+            //     document.getElementById("activeStatus"+userIndex).innerText = "Offline"
+            // }
+            saveData()
+            // setInterval(onlineStatus(userIndex), 5000)
         }
         
         const addIndex=(addingId, addingIndex, last)=>{
@@ -196,16 +230,41 @@ isFetchingData = true
             let receiveIds = allChatUsers[addingIndex].chats[2].length
             let userIds = allChatUsers[currentIndex].chats[2].length
 
-            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, [], 0])
-            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, [], 0])
+            const gameRef = ref(database, `allChatUsersGame`);
+            onValue(gameRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                allChatUsersGame = data
+                lastGameIndex = allChatUsersGame.length
+                console.log(allChatUsers)
+            }
+            });
 
-
+            
+            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, [], 0, lastGameIndex])
+            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, [], 0, lastGameIndex])
+            let gameDetails = {
+                score: {
+                    starter: 0,
+                    joined: 0
+                    },
+                a1: "",
+                b1: "",
+                c1: "",
+                a2: "",
+                b2: "",
+                c2: "",
+                a3: "",
+                b3: "",
+                c3: "",
+                host: currentIndex,
+                nextPlayer: "X"
+            }
+            allChatUsersGame.push(gameDetails)
+            saveGameData()
+            
             showUnadded()
         }
-
-        let me = null
-        let you = null
-        let all = null
         
         const openChat =(receiverIndex, receiverId)=>{
             displaySenderName.innerText = `${allChatUsers[receiverIndex].name}`
@@ -229,8 +288,8 @@ isFetchingData = true
                         </div>
                         <hr>
                         `
-                        console.log(allChatUsers[particular[0]].chats[2][index][3])
-                        if (allChatUsers[particular[0]].chats[2][index][3]>=1 && message.senderName==allChatUsers[currentIndex].name) {
+                        console.log(allChatUsers[particular[0]].chats[2][you][3])
+                        if (allChatUsers[particular[0]].chats[2][you][3]>=1 && message.senderName==allChatUsers[currentIndex].name) {
                             document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Unread`
                         } else if (allChatUsers[particular[0]].chats[2][index][3]==0 && message.senderName==allChatUsers[currentIndex].name) {
                             document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Seen`
@@ -264,7 +323,7 @@ isFetchingData = true
             }
             allChatUsers[currentIndex].chats[2][all][2].push(messageDetails)
             allChatUsers[receiverIndex].chats[2][receiverId][2].push(messageDetails)
-            allChatUsers[receiverIndex].chats[2][all][3] = Number(allChatUsers[receiverIndex].chats[2][all][3])+1
+            allChatUsers[receiverIndex].chats[2][receiverId][3] = Number(allChatUsers[receiverIndex].chats[2][receiverId][3])+1
             saveData()
             openChat(me, you)
             msgInput.focus()
@@ -274,6 +333,17 @@ isFetchingData = true
             let allChatUsersRef = ref(database, `allChatUsers`)
             set(allChatUsersRef, allChatUsersString)
         }
+        const saveGameData = ()=>{
+            const gameRef = ref(database, `allChatUsersGame`)
+            set(gameRef, allChatUsersGame)
+        }
+        const setToOffline = ()=>{
+            // console.log(allChatUsers[currentIndex]);
+            // console.log(allChatUsers[currentIndex].activeStatus);
+            allChatUsers[currentIndex].activeStatus = false
+            saveData()
+        }
+        // window.onunload = setToOffline()
 
         
         window.showUnadded = showUnadded
@@ -281,9 +351,10 @@ isFetchingData = true
         window.addIndex  = addIndex
         window.openChat = openChat
         window.sendMessage = sendMessage
+        window.setToOffline = setToOffline
 
         // window.onload = showUnadded()
-    </script>
+        </script>
 </body>
 
 </html>

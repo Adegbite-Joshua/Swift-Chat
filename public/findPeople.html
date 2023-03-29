@@ -32,7 +32,7 @@
     opacity: 100%;
 }
 </style>
-<body class="position-relative" style="min-height: 100vh;">
+<body class="position-relative" style="min-height: 100vh;" onunload="setToOffline()">
     <div id="waiting" class="d-none" style="z-index: 999999999999999;">
         <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
     </div>
@@ -99,6 +99,25 @@ isFetchingData = true
                     
                 })
             });
+        }
+
+        const onlineStatus =()=>{
+            if (window.navigator.onLine) {
+                allChatUsers[currentIndex].activeStatus = true
+            } else{
+                allChatUsers[currentIndex].activeStatus = false
+            }
+            // if (allChatUsers[currentIndex].activeStatus == true) {
+            //     activeStatus.innerText = "Active"
+            // } else{
+            //     activeStatus.innerText = "Offline"
+            // }
+            saveData()
+            setInterval(onlineStatus, 1000)
+        }
+        const setToOffline = ()=>{
+            allChatUsers[currentIndex].activeStatus = false
+            saveData()
         }
 
         const displayAllUsers = ()=>{
@@ -174,6 +193,7 @@ isFetchingData = true
         window.viewSomeone = viewSomeone
         window.gotoChatRoom = gotoChatRoom
         window.unfollowSomeone = unfollowSomeone
+        window.setToOffline = setToOffline
         // window.addIndex = addIndex
     </script>
 </body>
