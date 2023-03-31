@@ -11,29 +11,6 @@
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <style>
-    /* width */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 5px #0dcaf0;
-        border-radius: 10px;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: #0dcaf0;
-        opacity: 50%;
-        border-radius: 10px;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        opacity: 100%;
-    }
-
     a {
         text-decoration: none;
         color: black;
@@ -70,7 +47,7 @@
     }
 </style>
 
-<body class="position-relative" style="min-height: 100vh;" onunload="setToOffline()">
+<body class="position-relative">
     <div id="waiting" class="d-none" style="z-index: 999999999999999;">
         <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
     </div>
@@ -78,7 +55,7 @@
         <div class="w-100 bg-info justify-content-center align-items-center d-none d-md-flex pt-3">
             <a class="home" onclick="window.location.href = 'dashboard.html'">Home</a>
             <!-- <a class="posts" >Posts</a> -->
-            <a class="position-relative" onclick="gotoChatRoom()">Chat <span
+            <a class="position-relative" onclick="window.location.href='chats.html'">Chat <span
                     class="chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
                     style="z-index: 999999;"></span></a>
             <a class="people" onclick="window.location.href='findPeople.html'">Find People</a>
@@ -90,7 +67,7 @@
             <ul>
                 <li class="home" onclick="window.location.href = 'dashboard.html'">Home</li>
                 <!-- <li class="posts">Posts</li> -->
-                <li class="position-relative" onclick="gotoChatRoom()">Chat <span
+                <li class="position-relative" onclick="window.location.href='chats.html'">Chat <span
                         class="chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
                         style="z-index: 999999;"></span></li>
                 <li class="people" onclick="window.location.href='findPeople.html'">Find People</li>
@@ -100,9 +77,10 @@
             </ul>
         </div>
     </div>
-    <div id="userProfile"></div>
-    <h2 align="center">Find People</h2>
-    <div id="display"></div>
+    <h4 class="m-3 p-3 text-center"><span class="bg-info p-2 rounded-5">Notifications</span></h4>
+    <div id="displayNotifications" class="smallDeviceWidth w-50 d-block mx-auto my-3">
+
+    </div>
 
     <script type="module">
         let isFetchingData = true
@@ -110,9 +88,11 @@
         if (isFetchingData) {
             waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
         }
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-storage.js";
 
 
         const firebaseConfig = {
@@ -129,19 +109,15 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const database = getDatabase();
+        const storage = getStorage();
         let currentIndex = null
         let allChatUsers = []
-
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // alert(user.email)
                 // const uid = user.uid;
-                document.querySelector("title").innerText = `Find People | ${user.displayName}`
+                document.querySelector("title").innerText = `Notifications | ${user.displayName}`
                 currentUserFetch()
-                userProfile.innerHTML = `
-                <img class="d-inline rounded-circle" style="heigth: 70px; width: 70px;" src="${user.photoURL}"/>
-                <h1  class="d-inline">${user.displayName}</h1>
-                `
                 // ...
             } else {
                 alert("sign out")
@@ -153,39 +129,27 @@
         const currentUserFetch = () => {
             const starCountRef = ref(database, `allChatUsers`);
             onValue(starCountRef, (snapshot) => {
-                
                 allChatUsers = JSON.parse(snapshot.val());
                 allChatUsers.map((user) => {
                     if (user.userId == auth.currentUser.uid) {
                         currentIndex = user.userIndex
                         favicon.href = `${allChatUsers[currentIndex].photoURL}`
-                        displayAllUsers()
+                        // displayUserPosts()
+                        showNotifications()
+                        // showUnadded()
                     }
 
                 })
             });
-        }
-
-        const onlineStatus = () => {
-            if (window.navigator.onLine) {
-                allChatUsers[currentIndex].activeStatus = true
-            } else {
-                allChatUsers[currentIndex].activeStatus = false
-            }
-            // if (allChatUsers[currentIndex].activeStatus == true) {
-            //     activeStatus.innerText = "Active"
-            // } else{
-            //     activeStatus.innerText = "Offline"
+            
+            // if (allChatUsers[currentIndex].notifications[1].length > 1) {
+            //     document.querySelectorAll(".notifications").forEach(element => {
+            //         element.innerText = allChatUsers[currentIndex].notifications[0]
+            //     });
             // }
-            saveData()
-            setInterval(onlineStatus, 1000)
-        }
-        const setToOffline = () => {
-            allChatUsers[currentIndex].activeStatus = false
-            saveData()
         }
 
-        const displayAllUsers = () => {
+        const showNotifications = () => {
             let allUnreadMessages = 0
             if (allChatUsers[currentIndex].chats[2]) {
                 if (allChatUsers[currentIndex].chats[2].length>=1) {
@@ -199,73 +163,27 @@
                     element.innerText = allUnreadMessages
                 });
             }
-            if (allChatUsers[currentIndex].notifications[0] >= 1) {
-                document.querySelectorAll(".notifications").forEach(element => {
-                    element.innerText = allChatUsers[currentIndex].notifications[0]
-                });
+
+
+            allChatUsers[currentIndex].notifications[0] = 0
+            saveData()
+            if (allChatUsers[currentIndex].notifications[1].length > 0) {
+                displayNotifications.innerHTML = ""
+                allChatUsers[currentIndex].notifications[1].map((notification) => {
+                    displayNotifications.innerHTML += `
+                    <p class="p-3 bg-info text-light rounded-3">${notification}</p>
+                    `
+                })
+            } else {
+                displayNotifications.innerHTML = `
+                    <p class="p-3 bg-info text-light rounded-3">You have notification yet</p>
+                `
             }
 
-
-            display.innerHTML = ""
-            allChatUsers.map((user, index) => {
-                
-                if (index != currentIndex) {
-                    display.innerHTML += `
-                    <div class="p-2" id="coverHover">
-                        <img src="${user.photo}"  style="heigth: 40px; width: 40px;" class="rounded-circle"/>
-                        <span onclick="viewSomeone(${index})">${user.name}</span>
-                        <button class="btn btn-info float-end m-2  position-relative" onclick="gotoChatRoom()"> <span id="unread${index}" class="bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"></span>Message</button>
-                        <button class="btn btn-info float-end m-2" id="followBtn${index}" onclick="followSomeone(${index})">Follow</button>
-                        <button style="display: none;" class="btn btn-info float-end m-2" id="unfollowBtn${index}" onclick="unfollowSomeone(${index})">Unfollow</button>
-                    </div>
-                    `
-
-                    allChatUsers[currentIndex].chats[2].map((particular, indexs) => {
-                        if (particular[0] == index) {
-                            if (allChatUsers[currentIndex].chats[2][particular[1]][3] >= 1) {
-                                alert(allChatUsers[currentIndex].chats[2][particular[1]][3])
-                                document.getElementById("unread" + index).innerText = `${allChatUsers[currentIndex].chats[2][particular[1]][3]}`
-                            }
-
-                        }
-                    })
-                    allChatUsers[currentIndex].following.map((follow) => {
-                        if (index == follow) {
-                            document.getElementById(("followBtn" + index)).style.display = "none"
-                            document.getElementById(("unfollowBtn" + index)).style.display = "inline"
-                        }
-                    })
-                }
-            })
             isFetchingData = false
             if (!isFetchingData) {
                 waiting.className = "d-none"
             }
-        }
-
-        const unfollowSomeone = (index) => {
-            allChatUsers[currentIndex].following = allChatUsers[currentIndex].following.filter((followIndex) => followIndex != index)
-            allChatUsers[index].followers = allChatUsers[index].followers.filter((followIndex) => followIndex != currentIndex)
-            allChatUsers[index].notifications[0]++
-            allChatUsers[index].notifications[1].push(`${allChatUsers[currentIndex].name} has unfollowed you.`)
-            saveData()
-        }
-
-        const gotoChatRoom = () => {
-            window.location.href = "chats.html"
-        }
-
-        const viewSomeone = (viewingIndex) => {
-            localStorage.setItem("viewingIndex", viewingIndex)
-            window.location.href = "viewSomeone.html"
-        }
-
-        const followSomeone = (index) => {
-            allChatUsers[currentIndex].following.push(index)
-            allChatUsers[index].followers.push(currentIndex)
-            allChatUsers[index].notifications[0]++
-            allChatUsers[index].notifications[1].push(`${allChatUsers[currentIndex].name} started following you, you can follow back`)
-            saveData()
         }
 
         const saveData = () => {
@@ -273,13 +191,6 @@
             let allChatUsersRef = ref(database, `allChatUsers`)
             set(allChatUsersRef, allChatUsersString)
         }
-
-        window.followSomeone = followSomeone
-        window.viewSomeone = viewSomeone
-        window.gotoChatRoom = gotoChatRoom
-        window.unfollowSomeone = unfollowSomeone
-        window.setToOffline = setToOffline
-        // window.addIndex = addIndex
     </script>
 
     <!-- 

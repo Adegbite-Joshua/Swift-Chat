@@ -5,80 +5,147 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title></title>
+    <link rel="shortcut icon" href="" id="favicon" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <style>
-    *{
+    * {
         overflow-x: hidden;
     }
-        /* width */
-::-webkit-scrollbar {
-  width: 0;
-}
 
-:hover::-webkit-scrollbar {
-  width: 7px;
-  background: #0dcaf0;
-}
+    /* width */
+    ::-webkit-scrollbar {
+        width: 0;
+    }
 
-/* Track */
-:hover:-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px #0dcaf0; 
-  border-radius: 10px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #0dcaf0; 
-  opacity: 0;
-  border-radius: 10px;
-}
-:hover::-webkit-scrollbar-thumb {
-  background: #0dcaf0; 
-  opacity: 50%;
-  border-radius: 10px;
-}
+    :hover::-webkit-scrollbar {
+        width: 7px;
+        background: #0dcaf0;
+    }
 
-/* Handle on hover */
-:hover::-webkit-scrollbar-thumb:hover {
-    background: #0dcaf0;
-    opacity: 100%;
-}
+    /* Track */
+    :hover:-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #0dcaf0;
+        border-radius: 10px;
+    }
 
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #0dcaf0;
+        opacity: 0;
+        border-radius: 10px;
+    }
+
+    :hover::-webkit-scrollbar-thumb {
+        background: #0dcaf0;
+        opacity: 50%;
+        border-radius: 10px;
+    }
+
+    /* Handle on hover */
+    :hover::-webkit-scrollbar-thumb:hover {
+        background: #0dcaf0;
+        opacity: 100%;
+    }
+
+    @media (max-width: 768px) {
+        a {
+            font-size: 12px;
+        }
+
+        .friendsImage {
+            display: none;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 3px;
+        padding: 3px;
+        border: 1px solid white;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    li {
+        text-decoration: none;
+        color: black;
+        font-size: 15px;
+        font-weight: bold;
+        margin: 1.5px;
+        padding: 1.5px;
+        border: 1px solid white;
+        border-radius: 3px;
+        text-align: center;
+        list-style-type: none;
+    }
 </style>
 
-<body class="position-relative" onunload="setToOffline()">
+<body class="position-relative" style="min-height: 100vh;" onunload="setToOffline()">
     <div id="waiting" class="d-none" style="z-index: 999999999999999;">
         <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
     </div>
+    <div class="w-100">
+        <div class="w-100 bg-info justify-content-center align-items-center d-none d-md-flex pt-3">
+            <a class="home" onclick="window.location.href = 'dashboard.html'">Home</a>
+            <!-- <a class="posts" >Posts</a> -->
+            <a class="position-relative" onclick="window.location.href='chats.html'">Chat <span
+                    class="chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
+                    style="z-index: 999999;"></span></a>
+            <a class="people" onclick="window.location.href='findPeople.html'">Find People</a>
+            <a class="position-relative" onclick="window.location.href = 'notifications.html'">Notifications <span
+                    class="notifications chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
+                    style="z-index: 999999;"></span></a>
+        </div>
+        <div class="d-md-none w-100 bg-info d-flex justify-content-center align-items-center">
+            <ul>
+                <li class="home" onclick="window.location.href = 'dashboard.html'">Home</li>
+                <!-- <li class="posts">Posts</li> -->
+                <li class="position-relative" onclick="window.location.href='chats.html'">Chat <span
+                        class="chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
+                        style="z-index: 999999;"></span></li>
+                <li class="people" onclick="window.location.href='findPeople.html'">Find People</li>
+                <li class="position-relative" onclick="window.location.href = 'notifications.html'">Notifications <span
+                        class="notifications chats bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill"
+                        style="z-index: 999999;"></span></li>
+            </ul>
+        </div>
+    </div>
     <h1 id="welcomeNote" class="p-3 text-center"></h1>
 
-    <div class="row" style="height: 90vh;">
-        <div class="col-6 col-md-3 h-100" id="displayAdded">
+    <button class="btn btn-info w-25 d-block mx-auto" onclick="window.location.href = 'addFriends.html'">Add New
+        Friends</button>
+    <div class="row p-2 p-md-5" style="height: 90vh;">
+        <div class="col-6 col-md-5 h-100" id="displayAdded">
             <p class="p-3 bg-info rounded-3">You have no added friend</p>
         </div>
-        <div class="col-6 col-md-5 h-100" class="noScroll">
+        <div class="col-6 col-md-7 h-100" class="noScroll">
             <div class="h-75" class="noScroll">
-                <h3 class="text-center fw-bold overflow-hidden" id="displaySenderName" ></h3>
-                <div  id="displayChats" class="h-100" style="overflow-y: auto;">
-                    <h3 class="bg-info bg-opacity-100 p-3 rounded-5 d-block my-auto">Add friends And Click On Their Names To Chat With Them</h3>
+                <h3 class="text-center fw-bold overflow-hidden" id="displaySenderName"></h3>
+                <div id="displayChats" class="h-100" style="overflow-y: auto;">
+                    <h3 class="bg-info bg-opacity-100 p-3 rounded-5 d-block my-auto">Add friends And Click On Their
+                        Names To Chat With Them</h3>
                 </div>
             </div>
             <div id="displaySend" class="h-25 mb-5">
-                
+
             </div>
         </div>
-        <div class="col-12 col-md-3 h-100" id="displayUnadded">
+        <!-- <div class="col-12 col-md-3 h-100" id="displayUnadded">
 
-        </div> 
+        </div>  -->
     </div>
     <script type="module">
         let isFetchingData = true
         isFetchingData = true
-            if (isFetchingData) {
-                waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
-            }
+        if (isFetchingData) {
+            waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+        }
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
@@ -105,13 +172,14 @@
         let you = null
         let all = null
         let allChatUsersGame = []
+        let lastGameIndex = 0
 
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // alert(user.email)
                 // const uid = user.uid;
-                welcomeNote.innerText = `Chat Room, ${user.displayName}`
+                welcomeNote.innerText = `Chat Room | ${user.displayName}`
                 currentUserFetch()
                 // ...
             } else {
@@ -122,71 +190,98 @@
         });
 
 
-        const currentUserFetch =()=>{
+        const currentUserFetch = () => {
             const starCountRef = ref(database, `allChatUsers`);
             onValue(starCountRef, (snapshot) => {
-                console.log(snapshot)
                 allChatUsers = JSON.parse(snapshot.val());
-                allChatUsers.map((user)=>{
-                    if (user.userId==auth.currentUser.uid) {
+                allChatUsers.map((user) => {
+                    if (user.userId == auth.currentUser.uid) {
                         currentIndex = user.userIndex
-                        showUnadded()
+                        favicon.href = `${allChatUsers[currentIndex].photoURL}`
+                        document.querySelector("title").innerText = `${allChatUsers[currentIndex].name} - Chats`
+                        showAdded()
                     }
                 })
             });
-        }
-
-        const showUnadded =()=>{
-            console.log(allChatUsers)
-            console.log(currentIndex)
-            displayUnadded.innerHTML = ""
-            if (allChatUsers[currentIndex].chats[1].length>0) {
-                for (let i = 0; i < allChatUsers.length; i++) {
-                allChatUsers[currentIndex].chats[1].map((id, index)=>{
-                    if (id==allChatUsers[i].userId) {
-                        displayUnadded.innerHTML += `
-                            <div>
-                                <img src="${allChatUsers[i].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
-                                <p class="bg-info my-2 d-inline" onclick="addIndex('${id}', ${i}, ${index})">${allChatUsers[i].name}</p>    
-                            </div>
-                        `
-                    }
-                })           
-            }          
-            } else{
-                    displayUnadded.innerHTML += `
-                    <p class="bg-info my-5 p-3 rounded-3")">You have no new friend to chat with</p>
-                    `
+            const gameRef = ref(database, `allChatUsersGame`);
+            onValue(gameRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    allChatUsersGame = data
+                    lastGameIndex = data.length
                 }
-        showAdded()
-        saveData()
+            });
         }
-        
+
+        // const showUnadded =()=>{
+        //
+        //
+        //     displayUnadded.innerHTML = ""
+        //     if (allChatUsers[currentIndex].chats[1].length>0) {
+        //         for (let i = 0; i < allChatUsers.length; i++) {
+        //         allChatUsers[currentIndex].chats[1].map((id, index)=>{
+        //             if (id==allChatUsers[i].userId) {
+        //                 displayUnadded.innerHTML += `
+        //                     <div>
+        //                         <img src="${allChatUsers[i].photo}" style="height: 50px; width: 50px;" class="rounded-circle d-inline" />
+        //                         <p class="bg-info my-2 d-inline" onclick="addIndex('${id}', ${i}, ${index})">${allChatUsers[i].name}</p>    
+        //                     </div>
+        //                 `
+        //             }
+        //         })           
+        //     }          
+        //     } else{
+        //             displayUnadded.innerHTML += `
+        //             <p class="bg-info my-5 p-3 rounded-3")">You have no new friend to chat with</p>
+        //             `
+        //         }
+        // showAdded()
+        // saveData()
+        // }
 
 
-        const showAdded=()=>{
+
+        const showAdded = () => {
+            let allUnreadMessages = 0
+            if (allChatUsers[currentIndex].chats[2].length>=1) {
+                allChatUsers[currentIndex].chats[2].map((particular, index) => {
+                    allUnreadMessages += Number(allChatUsers[currentIndex].chats[2][index][3])
+                })
+            }
+            if (allUnreadMessages >= 1) {
+                document.querySelectorAll(".chats").forEach(element => {
+                    element.innerText = allUnreadMessages
+                });
+            }
+            if (allChatUsers[currentIndex].notifications[0] >= 1) {
+                document.querySelectorAll(".notifications").forEach(element => {
+                    element.innerText = allChatUsers[currentIndex].notifications[0]
+                });
+            }
+
+
             displayAdded.innerHTML = ""
-            if (allChatUsers[currentIndex].chats[2].length>0) {
-                allChatUsers[currentIndex].chats[2].map((particular, index)=>{
-                displayAdded.innerHTML += `
+            if (allChatUsers[currentIndex].chats[2].length > 0) {
+                allChatUsers[currentIndex].chats[2].map((particular, index) => {
+                    displayAdded.innerHTML += `
                     <div class="bg-info p-3 mt-3 rounded-3 position-relative overflow-visible">
                         <span id="displayUnread${particular[0]}" class="bg-dark position-absolute top-0 start-100 badge translate-middle rounded-pill" style="z-index: 999999;"></span>
-                        <img src="${allChatUsers[particular[0]].photo}" style="heigth: 50px; width: 50px;" class="rounded-circle d-inline" />
+                        <img src="${allChatUsers[particular[0]].photo}" style="heigth: 50px; width: 50px;" class="friendsImage rounded-circle d-inline" />
                         <p class="p-2 rounded-3 d-inline" onclick="openChat(${particular[0]}, ${particular[1]})">${allChatUsers[particular[0]].name}</p>    
                         <span id="activeStatus${particular[0]}" class="bg-dark position-absolute top-100 start-100 badge translate-middle rounded-pill" style="z-index: 999999;"></span>
                     </div>
                 `
-                    if (allChatUsers[currentIndex].chats[2][index][3]>=1) {
-                        document.getElementById("displayUnread"+particular[0]).innerText = `${allChatUsers[currentIndex].chats[2][index][3]}`
-                    } 
-                    console.log(allChatUsers[particular[0]].chats[2][index][3])
-                    console.log(allChatUsers[currentIndex].chats[2][index][3])
-                    // console.log(allChatUsers[particular[0]].chats[2][particular[1]][3])
-                    // console.log(allChatUsers[currentIndex].chats[2][particular[1]][3])
+                    if (allChatUsers[currentIndex].chats[2][index][3] >= 1) {
+                        document.getElementById("displayUnread" + particular[0]).innerText = `${allChatUsers[currentIndex].chats[2][index][3]}`
+                    }
+
+
+            
+            
                     onlineStatus(particular[0])
-            })
-            } else{
-                    displayAdded.innerHTML += `
+                })
+            } else {
+                displayAdded.innerHTML += `
                     <p class="bg-info my-2")">You have no friend to chat with yet, add friends to chat with them</p>
                     `
             }
@@ -195,19 +290,19 @@
                 waiting.className = "d-none"
             }
         }
-        
-        const onlineStatus =(userIndex)=>{
+
+        const onlineStatus = (userIndex) => {
             // For the chatting partner
             if (allChatUsers[userIndex].activeStatus == true) {
-                document.getElementById("activeStatus"+userIndex).innerText = "Active"
-            } else{
-                document.getElementById("activeStatus"+userIndex).innerText = "Offline"
+                document.getElementById("activeStatus" + userIndex).innerText = "Active"
+            } else {
+                document.getElementById("activeStatus" + userIndex).innerText = "Offline"
             }
 
             // For the current user
             if (window.navigator.onLine) {
                 allChatUsers[currentIndex].activeStatus = true
-            } else{
+            } else {
                 allChatUsers[currentIndex].activeStatus = false
             }
             // if (allChatUsers[userIndex].activeStatus == true) {
@@ -218,68 +313,58 @@
             saveData()
             // setInterval(onlineStatus(userIndex), 5000)
         }
-        
-        const addIndex=(addingId, addingIndex, last)=>{
-            // allChatUsers[currentIndex].chats[0].push(addingId)
-            // allChatUsers[addingIndex].chats[0].push(allChatUsers[currentIndex].userId)
-            allChatUsers[currentIndex].chats[1].splice(last, 1)
-            allChatUsers[addingIndex].chats[1] = allChatUsers[addingIndex].chats[1].filter((id)=>id!=allChatUsers[currentIndex].userId)
-            allChatUsers[addingIndex].notifications.push(`${allChatUsers[currentIndex].name} added you to his personal chat room, you can now have direct message with each other in the chat room`)
 
+        // const addIndex=(addingId, addingIndex, last)=>{
+        //     // allChatUsers[currentIndex].chats[0].push(addingId)
+        //     // allChatUsers[addingIndex].chats[0].push(allChatUsers[currentIndex].userId)
+        //     allChatUsers[currentIndex].chats[1].splice(last, 1)
+        //     allChatUsers[addingIndex].chats[1] = allChatUsers[addingIndex].chats[1].filter((id)=>id!=allChatUsers[currentIndex].userId)
+        //     allChatUsers[addingIndex].notifications.push(`${allChatUsers[currentIndex].name} added you to his personal chat room, you can now have direct message with each other in the chat room`)
 
-            let receiveIds = allChatUsers[addingIndex].chats[2].length
-            let userIds = allChatUsers[currentIndex].chats[2].length
+        //     let receiveIds = allChatUsers[addingIndex].chats[2].length
+        //     let userIds = allChatUsers[currentIndex].chats[2].length
 
-            const gameRef = ref(database, `allChatUsersGame`);
-            onValue(gameRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                allChatUsersGame = data
-                lastGameIndex = allChatUsersGame.length
-                console.log(allChatUsers)
-            }
-            });
+        //     allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, [], 0, lastGameIndex])
+        //     allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, [], 0, lastGameIndex])
+        //     let gameDetails = {
+        //         score: {
+        //             starter: 0,
+        //             joined: 0
+        //             },
+        //         a1: "",
+        //         b1: "",
+        //         c1: "",
+        //         a2: "",
+        //         b2: "",
+        //         c2: "",
+        //         a3: "",
+        //         b3: "",
+        //         c3: "",
+        //         host: currentIndex,
+        //         nextPlayer: "X"
+        //     }
+        //     allChatUsersGame.push(gameDetails)
+        //     saveGameData()
 
-            
-            allChatUsers[currentIndex].chats[2].push([addingIndex, receiveIds, [], 0, lastGameIndex])
-            allChatUsers[addingIndex].chats[2].push([currentIndex, userIds, [], 0, lastGameIndex])
-            let gameDetails = {
-                score: {
-                    starter: 0,
-                    joined: 0
-                    },
-                a1: "",
-                b1: "",
-                c1: "",
-                a2: "",
-                b2: "",
-                c2: "",
-                a3: "",
-                b3: "",
-                c3: "",
-                host: currentIndex,
-                nextPlayer: "X"
-            }
-            allChatUsersGame.push(gameDetails)
-            saveGameData()
-            
-            showUnadded()
-        }
-        
-        const openChat =(receiverIndex, receiverId)=>{
+        //     showUnadded()
+        // }
+
+        const openChat = (receiverIndex, receiverId) => {
             displaySenderName.innerText = `${allChatUsers[receiverIndex].name}`
-            allChatUsers[currentIndex].chats[2].map((particular, index)=>{
-                if (particular[0]==receiverIndex && particular[1]==receiverId) {
-                    me=receiverIndex
-                    you=receiverId
+            allChatUsers[currentIndex].chats[2].map((particular, index) => {
+                if (particular[0] == receiverIndex && particular[1] == receiverId) {
+                    me = receiverIndex
+                    you = receiverId
                     all = index
-                    console.log(me, you, all)
-                    if (allChatUsers[currentIndex].chats[2][index][2].length>0) {
+
+                    // setTimeout(refreshChat(me, you, all), 10000)
+                    localStorage.setItem("receiverIndex", me)
+                    if (allChatUsers[currentIndex].chats[2][index][2].length > 0) {
                         allChatUsers[currentIndex].chats[2][index][3] = 0
                         saveData()
                         displayChats.innerHTML = ""
-                        allChatUsers[currentIndex].chats[2][index][2].map((message, messageIndex)=>{
-                        displayChats.innerHTML +=   `
+                        allChatUsers[currentIndex].chats[2][index][2].map((message, messageIndex) => {
+                            displayChats.innerHTML += `
                         <div id="messageDiv${index}" class="bg-info bg-opacity-50 my-2">
                             <p class="my-1">${message.senderName}</p>
                             <p class="my-1">Message: ${message.message}</p>
@@ -288,23 +373,23 @@
                         </div>
                         <hr>
                         `
-                        console.log(allChatUsers[particular[0]].chats[2][you][3])
-                        if (allChatUsers[particular[0]].chats[2][you][3]>=1 && message.senderName==allChatUsers[currentIndex].name) {
-                            document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Unread`
-                        } else if (allChatUsers[particular[0]].chats[2][index][3]==0 && message.senderName==allChatUsers[currentIndex].name) {
-                            document.getElementById("messageStatus"+messageIndex).innerText = `Message Status: Seen`
+                        if (allChatUsers[particular[0]].chats[2][you][3] >= 1 && message.senderName == allChatUsers[currentIndex].name) {
+                            document.getElementById("messageStatus" + messageIndex).innerText = `Message Status: Unread`
+                        } else if (allChatUsers[particular[0]].chats[2][you][3] == 0 && message.senderName == allChatUsers[currentIndex].name) {
+                            document.getElementById("messageStatus" + messageIndex).innerText = `Message Status: Seen`
                         }
-                    })
-                    let messageLastIndex = 0
-                    messageLastIndex = allChatUsers[currentIndex].chats[2][index][2].length
-                    displayChats.scrollTop = displayChats.scrollHeight;
-                } else{
-                        displayChats.innerHTML =   `
+                        })
+                        let messageLastIndex = 0
+                        messageLastIndex = allChatUsers[currentIndex].chats[2][index][2].length
+                        displayChats.scrollTop = displayChats.scrollHeight;
+                    } else {
+                        displayChats.innerHTML = `
                         <p>Message: No message yet</p>
                         `
                     }
                     displaySend.innerHTML = `
                         <div class="d-flex">
+                            <button class="btn btn-info me-2" onclick="window.location.href = 'game.html'">Play Game</button>
                             <input class="form-control ms-2" type="text" id="msgInput">
                             <button class="btn btn-info me-2" onclick="sendMessage(${me}, ${you}, ${all})">Send</button>
                         </div>
@@ -312,8 +397,12 @@
                 }
             })
         }
-        
-        const sendMessage =(receiverIndex, receiverId, messageIndex)=>{
+
+        // const refreshChat = (me, you, all) => {
+        //     openChat(me, you, all)
+        // }
+
+        const sendMessage = (receiverIndex, receiverId, messageIndex) => {
             let date = new Date()
             let messageDetails = {
                 message: msgInput.value,
@@ -323,38 +412,40 @@
             }
             allChatUsers[currentIndex].chats[2][all][2].push(messageDetails)
             allChatUsers[receiverIndex].chats[2][receiverId][2].push(messageDetails)
-            allChatUsers[receiverIndex].chats[2][receiverId][3] = Number(allChatUsers[receiverIndex].chats[2][receiverId][3])+1
+            allChatUsers[receiverIndex].chats[2][receiverId][3] = Number(allChatUsers[receiverIndex].chats[2][receiverId][3]) + 1
             saveData()
             openChat(me, you)
             msgInput.focus()
         }
-        const saveData = ()=>{
+        const saveData = () => {
             let allChatUsersString = JSON.stringify(allChatUsers)
             let allChatUsersRef = ref(database, `allChatUsers`)
             set(allChatUsersRef, allChatUsersString)
         }
-        const saveGameData = ()=>{
+        const saveGameData = () => {
             const gameRef = ref(database, `allChatUsersGame`)
             set(gameRef, allChatUsersGame)
         }
-        const setToOffline = ()=>{
-            // console.log(allChatUsers[currentIndex]);
-            // console.log(allChatUsers[currentIndex].activeStatus);
+        const setToOffline = () => {
             allChatUsers[currentIndex].activeStatus = false
             saveData()
         }
-        // window.onunload = setToOffline()
 
-        
-        window.showUnadded = showUnadded
+
+        // window.onunload = setToOffline()
+        // window.showUnadded = showUnadded
         window.showAdded = showAdded
-        window.addIndex  = addIndex
+        // window.addIndex  = addIndex
         window.openChat = openChat
         window.sendMessage = sendMessage
         window.setToOffline = setToOffline
 
         // window.onload = showUnadded()
-        </script>
+    </script>
+
+    <!-- 
+        All comments are not erased in case I need them while upgrading the app 
+    -->
 </body>
 
 </html>

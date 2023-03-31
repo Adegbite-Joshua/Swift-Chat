@@ -12,7 +12,7 @@
 
 <body>
   <div class="w-50 d-block mx-auto">
-    <h2 class="text-center text-info">Welcome, Sign in with your Google account</h2>
+    <h2 class="text-center text-info" id="welcomeNote"></h2>
     <button class="btn btn-info w-100 mx-auto d-block my-2" id="signInGoogle">Sign Up With Google</button>
     <!-- <button class="btn btn-success w-100 mx-auto d-block my-2" id="signInYahoo">Sign Up With Yahoo</button>
     <input type="text" placeholder="name" id="namee">
@@ -22,6 +22,24 @@
   </div>
 
   <script type="module">
+    let text = "Welcome, Sign in with your Google account"
+    let i = 0
+    let speed = 50
+    const typeNote =()=>{
+      if (i<text.length) {
+        welcomeNote.innerText += text.charAt(i)
+        i++
+        setTimeout(typeNote, speed)
+      }
+      if (i=text.length) {
+        setTimeout(()=>{
+          welcomeNote.innerText = ""
+          typeNote()
+        }, 3000)
+      }
+    } 
+
+
     // Import the functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
@@ -53,8 +71,7 @@
       const data = snapshot.val();
       if (data) {
         allChatUsers = JSON.parse(data)
-        lastUserIndex = allChatUsers.length
-        console.log(allChatUsers)
+        lastUserIndex = allChatUsers.length        
       }
     });
 
@@ -74,43 +91,42 @@
           if (foundUser) {
             alert("Welcome back!!!")
             window.location.href = "dashboard.html"
-          } else{
-              let added = []
-              let unadded = []
-              let chat = []
-              allChatUsers.map((user) => {
-                unadded.push(user.userId)
-              })
-              let user = {
-                name: userInfo.displayName,
-                photo: userInfo.photoURL,
-                email: userInfo.email,
-                userId: userInfo.uid,
-                chats: [added, unadded, chat],
-                userIndex: lastUserIndex,
-                posts: [],
-                followers: [],
-                following: [],
-                notifications: [],
-                activeStatus: false
-              }
-              allChatUsers.map((users, index) => {
-                users.chats[1].push(userInfo.uid)
-              })
-              allChatUsers.push(user)
-              let allChatUsersString = JSON.stringify(allChatUsers)
-              console.log(allChatUsersString)
-              let allChatUsersRef = ref(database, `allChatUsers`)
-              set(allChatUsersRef, allChatUsersString)
-              alert("you have successfully created an account")
-              window.location.href = "dashboard.html"
+          } else {
+            let added = []
+            let unadded = []
+            let chat = []
+            allChatUsers.map((user) => {
+              unadded.push(user.userId)
+            })
+            let user = {
+              name: userInfo.displayName,
+              photo: userInfo.photoURL,
+              email: userInfo.email,
+              userId: userInfo.uid,
+              chats: [added, unadded, chat],
+              userIndex: lastUserIndex,
+              posts: [],
+              followers: [],
+              following: [],
+              notifications: [0, []],
+              activeStatus: false
+            }
+            allChatUsers.map((users, index) => {
+              users.chats[1].push(userInfo.uid)
+            })
+            allChatUsers.push(user)
+            let allChatUsersString = JSON.stringify(allChatUsers)           
+            let allChatUsersRef = ref(database, `allChatUsers`)
+            set(allChatUsersRef, allChatUsersString)
+            alert("you have successfully created an account")
+            window.location.href = "dashboard.html"
           }
         }).catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           const emailError = error.customData.email;
           const credential = GoogleAuthProvider.credentialFromError(error);
-          console.log(error)
+          
         });
     })
 
@@ -134,9 +150,7 @@
     //       chats: [added, unadded, chat]
     //     }
     //       allChatUsers.push(user)
-    //       console.log(allChatUsers)
     //       let allChatUsersString = JSON.stringify(allChatUsers)
-    //       console.log(allChatUsersString)
     //     let allChatUsersRef = ref(database, `allChatUsers`)
     //     set(allChatUsersRef, allChatUsersString)
     //     // window.location.href = "dashboard.html"
@@ -145,6 +159,10 @@
 
     window.signIn = signIn
   </script>
+
+  <!-- 
+        All comments are not erased in case I need them while upgrading the app 
+    -->
 </body>
 
 </html>

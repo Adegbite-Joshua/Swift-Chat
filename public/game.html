@@ -1,58 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play Game</title>
+    <link rel="shortcut icon" href="" id="favicon" type="image/x-icon">
     <link rel="shortcut icon" href="gift.png" type="image/x-icon">
-    <link rel="stylesheet" href="../../bootstrap-5.2.2-dist/css/bootstrap.css">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 <style>
-    .checkBox{
+    .checkBox {
         height: 90px;
         width: 90px;
         font-size: 50px;
     }
-    .checkBox:hover{
+
+    .checkBox:hover {
         transform: scale(1.3);
     }
-    .danger{
+
+    .danger {
         background: linear-gradient(orange, orange, green, green);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .warning{
+
+    .warning {
         background: linear-gradient(red, red, green, green);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .success{
+
+    .success {
         background: linear-gradient(orange, orange, red, red);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    .danger:hover{
+
+    .danger:hover {
         box-shadow: 0 0 1rem red;
         background: red !important;
         opacity: 80%;
         -webkit-text-fill-color: orange;
     }
-    .warning:hover{
+
+    .warning:hover {
         box-shadow: 0 0 1rem orange;
         background: orange !important;
         opacity: 80%;
         -webkit-text-fill-color: red;
     }
-    .success:hover{
+
+    .success:hover {
         box-shadow: 0 0 1rem green;
         background: green !important;
         opacity: 80%;
         -webkit-text-fill-color: orange;
     }
-    .continueDiv{
+
+    .continueDiv {
         width: 300px;
         height: 50px;
         background-color: blueviolet;
@@ -64,28 +73,51 @@
         align-items: center;
         border-bottom: 5px solid gold;
     }
-    
+
     @media (max-width: 800px) {
-        .smallDeviceHeight{
+        .smallDeviceHeight {
             height: 40% !important;
         }
-        .smallDeviceHeight2{
+
+        .smallDeviceHeight2 {
             height: 60% !important;
         }
     }
 </style>
+
 <body class="row row-cols-1 row-cols-md-2 overflow-hidden position-relative">
+    <div id="waiting" class="d-none" style="z-index: 999999999999999;">
+        <p class="text-light p-2"><span class="spinner-border text-info"></span>Loading...</p>
+    </div>
     <div class="smallDeviceHeight">
         <div style="height: 300px; width: 300px; display: flex; flex-wrap: wrap;" class="mx-auto">
-            <div id="a1" class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="a2" class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="a3" class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="b1" class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="b2" class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="b3" class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="c1" class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="c2" class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
-            <div id="c3" class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold" onclick="playGame(event)"></div>
+            <div id="a1"
+                class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="a2"
+                class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="a3"
+                class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="b1"
+                class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="b2"
+                class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="b3"
+                class="border border-2 checkBox m-auto rounded-2 border-success success d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="c1"
+                class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="c2"
+                class="border border-2 checkBox m-auto rounded-2 border-warning warning d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
+            <div id="c3"
+                class="border border-2 checkBox m-auto rounded-2 border-danger danger d-flex justify-content-center align-items-center fw-bold"
+                onclick="playGame(event)"></div>
         </div>
         <p id="nextPlayerToPlay" class="text-success text-center"></p>
         <div class="mx-auto w-50 d-block btn-group">
@@ -97,7 +129,9 @@
         <button class="btn btn-success d-block w-50 mx-auto my-2" onclick="resetGame()">Reset</button>
     </div>
     <div class="smallDeviceHeight2">
-        <marquee behavior="" direction=""><h1 class="mt-5 text-success">TIC TAC TOE GAME</h1></marquee>
+        <marquee behavior="" direction="">
+            <h1 class="mt-5 text-success">TIC TAC TOE GAME</h1>
+        </marquee>
         <table style="width: 90%;" class="text-center mt-5 mx-auto">
             <thead>
                 <tr>
@@ -122,13 +156,20 @@
                 </tr>
             </tbody>
         </table>
-        <marquee behavior="scroll" direction="left"><h4 id="winner"></h4></marquee>
+        <marquee behavior="scroll" direction="left">
+            <h4 id="winner"></h4>
+        </marquee>
     </div>
     <div id="continueDiv" class="continueDiv" style="display: none;">
         <p>Click on continue game to continue</p>
     </div>
 
     <script type="module">
+        let isFetchingData = true
+        isFetchingData = true
+        if (isFetchingData) {
+            waiting.className = "d-block position-absolute bottom-0 top-0 start-0 end-0 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+        }
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
@@ -150,18 +191,20 @@
         const auth = getAuth();
         const database = getDatabase();
         let currentIndex = null
+        let receiverIndex = Number(localStorage.getItem("receiverIndex"))
         let allChatUsers = []
         let allChatUsersGame = []
         let lastGameIndex = null
         let me = null
         let you = null
         let all = null
+        let game = []
+        const sound = new Audio("./medias/sound.mp3")
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // alert(user.email)
                 // const uid = user.uid;
-                welcomeNote.innerText = `Chat Room, ${user.displayName}`
                 currentUserFetch()
                 // ...
             } else {
@@ -172,61 +215,63 @@
         });
 
 
-        const currentUserFetch =()=>{
+        const currentUserFetch = () => {
             const starCountRef = ref(database, `allChatUsers`);
             onValue(starCountRef, (snapshot) => {
-                console.log(snapshot)
+                
                 allChatUsers = JSON.parse(snapshot.val());
-                allChatUsers.map((user)=>{
-                    if (user.userId==auth.currentUser.uid) {
+                allChatUsers.map((user) => {
+                    if (user.userId == auth.currentUser.uid) {
                         currentIndex = user.userIndex
+                        document.querySelector("title").innerText = `${allChatUsers[currentIndex].name} - Game`
                     }
-                    
+
                 })
             });
             const gameRef = ref(database, `allChatUsersGame`);
             onValue(gameRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                allChatUsersGame = data
-                console.log(allChatUsersGame)
-            }
+                const data = snapshot.val();
+                if (data) {
+                    allChatUsersGame = data   
+                    favicon.href = `${allChatUsers[currentIndex].photoURL}`                
+                    displayDetails()
+                }
             });
+
         }
 
-
-        console.log(allChatUsers)
-        allChatUsers[currentIndex].chats[2].map((particular, index)=>{
-            if (particular[0]==receiverIndex) {
-                // alert('yess')
-                me=receiverIndex
-                you=particular[1]
-                all = index
-                console.log(me, you , all)
+        const displayDetails = () => {           
+            allChatUsers[currentIndex].chats[2].map((particular, index) => {
+                if (particular[0] == receiverIndex) {
+                    // alert('yess')
+                    me = receiverIndex
+                    you = particular[1]
+                    all = index                   
+                }
+            })
+            game = allChatUsersGame[allChatUsers[currentIndex].chats[2][all][4]]
+            
+            fPSN.innerText = 1
+            sPSN.innerText = 2
+            
+            if (game.host == currentIndex) {
+                firstSign.innerText = "X"
+                firstPlayer.innerText = allChatUsers[currentIndex].name
+                secondSign.innerText = "O"
+                secondPlayer.innerText = allChatUsers[receiverIndex].name
+            } else if (game.host == receiverIndex) {
+                secondSign.innerText = "O"
+                secondPlayer.innerText = allChatUsers[currentIndex].name
+                firstSign.innerText = "X"
+                firstPlayer.innerText = allChatUsers[receiverIndex].name
             }
-        })
-        let game = allChatUsersGame[allChatUsers[currentIndex].chats[2][all][3]]
-        console.log(game); 
-
-        fPSN.innerText = 1
-        sPSN.innerText = 2
-        console.log(game);
-        if (game.host == currentIndex) {
-            firstSign.innerText = "X"
-            firstPlayer.innerText = allChatUsers[currentIndex].firstName
-            secondSign.innerText = "O"
-            secondPlayer.innerText = allChatUsers[receiverIndex].firstName
-        } else if (game.host == receiverIndex) {
-            secondSign.innerText = "O"
-            secondPlayer.innerText = allChatUsers[currentIndex].firstName
-            firstSign.innerText = "X"
-            firstPlayer.innerText = allChatUsers[receiverIndex].firstName
+            updateBoard()
         }
-        const updateBoard = ()=>{
-            game = allChatUsersGame[allChatUsers[currentIndex].chats[2][all][3]]
-            console.log(game.score.starter);
+
+        const updateBoard = () => {
+            game = allChatUsersGame[allChatUsers[currentIndex].chats[2][all][4]]
             firstScore.innerText = game.score.starter
-            secondScore.innerText =  game.score.joined       
+            secondScore.innerText = game.score.joined
             a1.innerText = game[`a1`]
             b1.innerText = game[`b1`]
             c1.innerText = game[`c1`]
@@ -236,46 +281,69 @@
             a3.innerText = game[`a3`]
             b3.innerText = game[`b3`]
             c3.innerText = game[`c3`]
+            // let nextPlayer = "X"
+            // nextPlayerToPlay.innerText = `It is ${allChatUsers[currentIndex].name}'s turn to play, playing as "X"`
+            nextPlayerDisplay()
+            isFetchingData = false
+            if (!isFetchingData) {
+                waiting.className = "d-none"
+            }
         }
-        let nextPlayer = "X"
-        let sound = new Audio("../medias/sound.mp3")
-        nextPlayerToPlay.innerText = `It is ${allChatUsers[currentIndex].firstName}'s turn to play, playing as "X"`
-        const playGame =(e)=>{
-            if (game.a1=="X" && game.b2=="X" && game.c3=="X" || game.a2=="X" && game.b2=="X" && game.c2=="X" || game.a3=="X" && game.b2=="X" && game.c1=="X" || game.b1=="X" && game.b2=="X" && game.b3=="X" || game.a1=="X" && game.a2=="X" && game.a3=="X" || game.c1=="X" && game.c2=="X" && game.c3=="X" || game.a1=="X" && game.b1=="X" && game.c1=="X" || game.a3=="X" && game.b3=="X" && game.c3=="X" || game.a1=="O" && game.b2=="O" && game.c3=="O" || game.a2=="O" && game.b2=="O" && game.c2=="O" || game.a3=="O" && game.b2=="O" && game.c1=="O" || game.b1=="O" && game.b2=="O" && game.b3=="O" || game.a1=="O" && game.a2=="O" && game.a3=="O" || game.c1=="O" && game.c2=="O" && game.c3=="O" || game.a1=="O" && game.b1=="O" && game.c1=="O" || game.a3=="O" && game.b3=="O" && game.c3=="O") {
+
+        const playGame = (e) => {
+            if (game.a1 == "X" && game.b2 == "X" && game.c3 == "X" || game.a2 == "X" && game.b2 == "X" && game.c2 == "X" || game.a3 == "X" && game.b2 == "X" && game.c1 == "X" || game.b1 == "X" && game.b2 == "X" && game.b3 == "X" || game.a1 == "X" && game.a2 == "X" && game.a3 == "X" || game.c1 == "X" && game.c2 == "X" && game.c3 == "X" || game.a1 == "X" && game.b1 == "X" && game.c1 == "X" || game.a3 == "X" && game.b3 == "X" && game.c3 == "X" || game.a1 == "O" && game.b2 == "O" && game.c3 == "O" || game.a2 == "O" && game.b2 == "O" && game.c2 == "O" || game.a3 == "O" && game.b2 == "O" && game.c1 == "O" || game.b1 == "O" && game.b2 == "O" && game.b3 == "O" || game.a1 == "O" && game.a2 == "O" && game.a3 == "O" || game.c1 == "O" && game.c2 == "O" && game.c3 == "O" || game.a1 == "O" && game.b1 == "O" && game.c1 == "O" || game.a3 == "O" && game.b3 == "O" && game.c3 == "O") {
                 // alert("Click on continue")
                 // continueDiv.classList.add("continueDiv")
                 continueDiv.style.display = "flex"
-                setTimeout(()=>continueDiv.style.display="none", 3000);
+                setTimeout(() => continueDiv.style.display = "none", 3000);
             } else {
-                if (game.nextPlayer=="X" && e.target.innerText=="" && game.host == currentIndex) {
+                if (game.nextPlayer == "X" && e.target.innerText == "" && game.host == currentIndex) {
                     e.target.innerText = "X"
                     game[`${e.target.id}`] = "X"
                     game.nextPlayer = "O"
-                    nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].firstName}'s turn to play, playing as "O"`
-                } else if (game.nextPlayer=="O" && e.target.innerText=="" && game.host == receiverIndex) {
+                    // nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].name}'s turn to play, playing as "O"`
+                    nextPlayerDisplay()
+                } else if (game.nextPlayer == "O" && e.target.innerText == "" && game.host == receiverIndex) {
                     e.target.innerText = "O"
                     game.nextPlayer = "X"
                     game[`${e.target.id}`] = "O"
-                    nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].firstName}'s turn to play, playing as "X"`
+                    // nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].name}'s turn to play, playing as "X"`
+                    nextPlayerDisplay()
                 }
-                if (a1.innerText=="X" && b2.innerText=="X" && c3.innerText=="X" || a2.innerText=="X" && b2.innerText=="X" && c2.innerText=="X" || a3.innerText=="X" && b2.innerText=="X" && c1.innerText=="X" || b1.innerText=="X" && b2.innerText=="X" && b3.innerText=="X" || a1.innerText=="X" && a2.innerText=="X" && a3.innerText=="X" || c1.innerText=="X" && c2.innerText=="X" && c3.innerText=="X" || a1.innerText=="X" && b1.innerText=="X" && c1.innerText=="X" || a3.innerText=="X" && b3.innerText=="X" && c3.innerText=="X") {
-                    game.score.starter = Number( game.score.starter)+5
+                if (a1.innerText == "X" && b2.innerText == "X" && c3.innerText == "X" || a2.innerText == "X" && b2.innerText == "X" && c2.innerText == "X" || a3.innerText == "X" && b2.innerText == "X" && c1.innerText == "X" || b1.innerText == "X" && b2.innerText == "X" && b3.innerText == "X" || a1.innerText == "X" && a2.innerText == "X" && a3.innerText == "X" || c1.innerText == "X" && c2.innerText == "X" && c3.innerText == "X" || a1.innerText == "X" && b1.innerText == "X" && c1.innerText == "X" || a3.innerText == "X" && b3.innerText == "X" && c3.innerText == "X") {
+                    game.score.starter = Number(game.score.starter) + 5
                     game.nextPlayer = ""
-                    winner.innerText = `${allChatUsers[currentIndex].firstName} wins`
+                    winner.innerText = `${allChatUsers[currentIndex].name} wins`
                     updateBoard()
-                } else if (a1.innerText=="O" && b2.innerText=="O" && c3.innerText=="O" || a2.innerText=="O" && b2.innerText=="O" && c2.innerText=="O" || a3.innerText=="O" && b2.innerText=="O" && c1.innerText=="O" || b1.innerText=="O" && b2.innerText=="O" && b3.innerText=="O" || a1.innerText=="O" && a2.innerText=="O" && a3.innerText=="O" || c1.innerText=="O" && c2.innerText=="O" && c3.innerText=="O" || a1.innerText=="O" && b1.innerText=="O" && c1.innerText=="O" || a3.innerText=="O" && b3.innerText=="O" && c3.innerText=="O") {
-                    allChatUsersGame[allChatUsers[receiverIndex].chats[2][all][3]].score.joined = Number( game.score.joined)+5
+                } else if (a1.innerText == "O" && b2.innerText == "O" && c3.innerText == "O" || a2.innerText == "O" && b2.innerText == "O" && c2.innerText == "O" || a3.innerText == "O" && b2.innerText == "O" && c1.innerText == "O" || b1.innerText == "O" && b2.innerText == "O" && b3.innerText == "O" || a1.innerText == "O" && a2.innerText == "O" && a3.innerText == "O" || c1.innerText == "O" && c2.innerText == "O" && c3.innerText == "O" || a1.innerText == "O" && b1.innerText == "O" && c1.innerText == "O" || a3.innerText == "O" && b3.innerText == "O" && c3.innerText == "O") {
+                    allChatUsersGame[allChatUsers[receiverIndex].chats[2][all][3]].score.joined = Number(game.score.joined) + 5
                     game.nextPlayer = ""
-                    winner.innerText = `${allChatUsers[receiverIndex].firstName} wins`
+                    winner.innerText = `${allChatUsers[receiverIndex].name} wins`
                     updateBoard()
-                } else if (a1.innerText!=""&&a2.innerText!=""&&a3.innerText!=""&&b1.innerText!=""&&a2.innerText!=""&&b3.innerText!=""&&c1.innerText!=""&&c2.innerText!=""&&c3.innerText!="") {
+                } else if (a1.innerText != "" && a2.innerText != "" && a3.innerText != "" && b1.innerText != "" && a2.innerText != "" && b3.innerText != "" && c1.innerText != "" && c2.innerText != "" && c3.innerText != "") {
                     winner.innerText = `Draw 😰`
                 }
             }
-            saveGame()
+            saveGameData()
         }
 
-        const continueGame =()=>{
+        const nextPlayerDisplay = () => {
+            if (game.host == currentIndex) {
+                if (game.nextPlayer == "X") {
+                    nextPlayerToPlay.innerText = `It is ${allChatUsers[currentIndex].name}'s turn to play, playing as "X"`
+                } else {
+                    nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].name}'s turn to play, playing as "O"`
+                }
+            } else {
+                if (game.nextPlayer == "X") {
+                    nextPlayerToPlay.innerText = `It is ${allChatUsers[receiverIndex].name}'s turn to play, playing as "X"`
+                } else {
+                    nextPlayerToPlay.innerText = `It is ${allChatUsers[currentIndex].name}'s turn to play, playing as "O"`
+                }
+            }
+        }
+
+        const continueGame = () => {
             game[`a1`] = ""
             game[`a2`] = ""
             game[`a3`] = ""
@@ -287,10 +355,10 @@
             game[`c3`] = ""
             winner.innerText = ""
             game.nextPlayer = "X"
-            saveGame()
+            saveGameData()
             updateBoard()
         }
-        const restartGame =()=>{
+        const restartGame = () => {
             firstScore.innerText = 0
             secondScore.innerText = 0
             game[`a1`] = ""
@@ -304,10 +372,10 @@
             game[`c3`] = ""
             winner.innerText = ""
             game.nextPlayer = "X"
-            saveGame()
+            saveGameData()
             updateBoard()
         }
-        const resetGame =()=>{
+        const resetGame = () => {
             game.score.starter = 0
             game.score.joined = 0
             game[`a1`] = ""
@@ -323,29 +391,44 @@
             game.nextPlayer = "X"
             // localStorage.removeItem("tictactoePlayers")
             // window.location.href = "tictactoeLandingPage.html"
-            saveGame()
+            saveGameData()
             updateBoard()
         }
-        const playMusic =()=>{
+        const playMusic = () => {
             sound.play()
         }
-        const pauseMusic =()=>{
+        const pauseMusic = () => {
             sound.pause()
         }
-        const saveGame =()=>{
-            localStorage.setItem("allChatUsersGame", JSON.stringify(allChatUsersGame))
-        }
 
-        const saveData = ()=>{
+        const saveData = () => {
             let allChatUsersString = JSON.stringify(allChatUsers)
             let allChatUsersRef = ref(database, `allChatUsers`)
             set(allChatUsersRef, allChatUsersString)
         }
+        const saveGameData = () => {
+            const gameRef = ref(database, `allChatUsersGame`)
+            set(gameRef, allChatUsersGame)
+        }
 
 
 
-        window.onload = updateBoard()
+        window.updateBoard = updateBoard
+        window.displayDetails = displayDetails
+        window.saveData = saveData
+        window.playMusic = playMusic
+        window.pauseMusic = pauseMusic
+        window.playGame = playGame
+        window.continueGame = continueGame
+        window.restartGame = restartGame
+        window.resetGame = resetGame
+
 
     </script>
+
+    <!-- 
+        All comments are not erased in case I need them while upgrading the app 
+    -->
 </body>
+
 </html>
