@@ -207,9 +207,7 @@
             <!-- <button onclick="gotoChatRoom()" class="btn btn-lg btn-info px-3 my-2">Chat Room</button> -->
         </div>
         <div class="w-100 mx-auto row" style="min-height: 60vh;">
-            <div id="displayPosts" class="col-12 h-100 mx-auto row">
-
-            </div>
+            <div id="displayPosts" class="col-12 h-100 mx-auto row"></div>
             <!-- <div class="col-12 col-md-5 h-100 mx-auto row p-3">
                 <h4 class="p-2 text-center fw-bold rounded-3">Notifications</h4>
                 <div id="displayNotifications"></div>
@@ -298,6 +296,7 @@
                 // ...
             } else {
                 alert("sign out")
+                window.location.href = "index.html"
                 // User is signed out
                 // ...
             }
@@ -431,18 +430,18 @@
                 uploadTask.on("state-changed", (snapshot) => {
                     let progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
                     
-                    // displayProgress.innerHTML = `
-                    //     <div style="height: 30px; width: 100%;" class="progress" role="progressbar" aria-label="Animated striped" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
-                    //         <div style="height: 30px; width: ${progress}%;" class="progress-bar progress-bar-striped progress-bar-animated">Your post progress is ${progress} %</div>
-                    //     </div>
-                    //     `
+                    displayProgress.innerHTML = `
+                        <div style="height: 30px; width: 100%;" class="progress" role="progressbar" aria-label="Animated striped" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
+                            <div style="height: 30px; width: ${progress}%;" class="progress-bar progress-bar-striped progress-bar-animated">Your post progress is ${progress} %</div>
+                        </div>
+                        `
 
 
                 }, (error) => {
                     
                 }, () => {
-                    // displayProgress.innerHTML = ""
-                    // alert(`${i+1} file upload successful`)
+                    displayProgress.innerHTML = ""
+                    alert(`${i+1} file upload successful`)
                     popup.classList.remove("open-popup")
                 })
             }
